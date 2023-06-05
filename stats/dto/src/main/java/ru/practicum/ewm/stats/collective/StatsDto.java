@@ -1,4 +1,4 @@
-package ru.practicum.ewm.stats.model;
+package ru.practicum.ewm.stats.collective;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

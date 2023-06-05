@@ -3,8 +3,8 @@ package ru.practicum.ewm.stats.client;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.practicum.ewm.stats.model.HitDto;
-import ru.practicum.ewm.stats.model.StatsDto;
+import ru.practicum.ewm.stats.collective.HitDto;
+import ru.practicum.ewm.stats.collective.StatsDto;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

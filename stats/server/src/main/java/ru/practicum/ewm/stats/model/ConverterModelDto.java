@@ -1,5 +1,8 @@
 package ru.practicum.ewm.stats.model;
 
+import ru.practicum.ewm.stats.collective.HitDto;
+import ru.practicum.ewm.stats.collective.StatsDto;
+
 import java.util.ArrayList;
 import java.util.List;
 

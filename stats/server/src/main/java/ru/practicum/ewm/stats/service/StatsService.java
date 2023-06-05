@@ -2,7 +2,10 @@ package ru.practicum.ewm.stats.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.stats.model.*;
+import ru.practicum.ewm.stats.collective.*;
+import ru.practicum.ewm.stats.model.ConverterModelDto;
+import ru.practicum.ewm.stats.model.HitModel;
+import ru.practicum.ewm.stats.model.StatsModel;
 import ru.practicum.ewm.stats.repository.StatsRepositoryJpa;
 
 import java.time.LocalDateTime;

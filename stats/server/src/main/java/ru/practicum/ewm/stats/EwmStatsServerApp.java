@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EwmStatsServerApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(EwmStatsServerApp.class);
+        SpringApplication.run(EwmStatsServerApp.class, args);
     }
 }
