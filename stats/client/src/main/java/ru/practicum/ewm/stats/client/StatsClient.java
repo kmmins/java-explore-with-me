@@ -1,6 +1,9 @@
 package ru.practicum.ewm.stats.client;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.ewm.stats.collective.HitDto;
@@ -26,25 +29,39 @@ public class StatsClient {
     }
 
 
-    public ResponseEntity<Void> saveStats(String app, String uri, String ip) {
-        HitDto body = new HitDto(app, uri, ip, LocalDateTime.now());
+    public ResponseEntity<Void> saveStats(String app, String uri, String ip, LocalDateTime dateTime) {
+        HitDto body = new HitDto(app, uri, ip, dateTime);
         return rest.postForEntity("/hit", body, Void.class);
     }
 
-    public List<StatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean uniq) {
-        Map<String, Object> parameters = Map.of(
+    public List<StatsDto> getStats(LocalDateTime start, LocalDateTime end, @Nullable String[] uris, @Nullable boolean uniq) {
+        if (uris != null) {
+            Map<String, Object> parametersUris = Map.of(
+                    "start", encodeDateTime(start),
+                    "end", encodeDateTime(end),
+                    "uris", uris,
+                    "unique", uniq);
+            ResponseEntity<StatsDto[]> response = rest.getForEntity("/stats?start={start}&end={end}&uris={uris}&unique={unique}", StatsDto[].class, parametersUris);
+            StatsDto[] result = response.getBody();
+            return Arrays.stream(result)
+                    .collect(Collectors.toList());
+        }
+        Map<String, Object> parametersUris = Map.of(
                 "start", encodeDateTime(start),
                 "end", encodeDateTime(end),
-                "uris", uris,
-                "unique", uniq
-        );
-        ResponseEntity<StatsDto[]> response = rest.getForEntity(
-                "/stats?start={start}&end={end}&uris={uris}&unique={unique}",
-                StatsDto[].class,
-                parameters);
+                "unique", uniq);
+        ResponseEntity<StatsDto[]> response = rest.getForEntity("/stats?start={start}&end={end}&uris={uris}&unique={unique}", StatsDto[].class, parametersUris);
         StatsDto[] result = response.getBody();
         return Arrays.stream(result)
                 .collect(Collectors.toList());
+    }
+
+
+    private HttpHeaders defaultHeaders() {
+        HttpHeaders head = new HttpHeaders();
+        head.setContentType(MediaType.APPLICATION_JSON);
+        head.setAccept(List.of(MediaType.APPLICATION_JSON));
+        return head;
     }
 
     private String encodeDateTime(LocalDateTime dateTime) {
