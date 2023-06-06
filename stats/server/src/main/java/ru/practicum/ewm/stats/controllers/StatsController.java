@@ -44,11 +44,11 @@ public class StatsController {
         return result;
     }
 
-
-    private LocalDateTime parseTime (String dateTime){
+    private LocalDateTime parseTime(String dateTime) {
         return LocalDateTime.parse(dateTime, formatter);
     }
-    private boolean parseBool (String unique) {
+
+    private boolean parseBool(String unique) {
         boolean bool;
         try {
             bool = Boolean.parseBoolean(unique);
