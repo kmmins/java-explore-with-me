@@ -8,9 +8,9 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
-      - stats-service
+      - stats-server
     environment:
-      - STATS_SERVICE_SERVER_URL=http://server:9090
+      - STATS_SERVER_URL=http://server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/main-db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
@@ -25,7 +25,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
-  stats-service:
+  stats-server:
     build: ./stats
     image: ewm-stats-service-image
     container_name: ewm-stats-service-container
