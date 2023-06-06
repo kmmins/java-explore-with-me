@@ -39,11 +39,12 @@ public class StatsClient {
             ResponseEntity<StatsDto[]> response = rest.exchange("/stats?start={start}&end={end}&uris={uris}&unique={unique}", HttpMethod.GET, requestEntity, StatsDto[].class, parametersUris);
             StatsDto[] result = response.getBody();
             return Arrays.stream(result).collect(Collectors.toList());
+        } else {
+            Map<String, Object> parameters = Map.of("start", encodeDateTime(start), "end", encodeDateTime(end), "unique", uniq);
+            ResponseEntity<StatsDto[]> response = rest.exchange("/stats?start={start}&end={end}&unique={unique}", HttpMethod.GET, requestEntity, StatsDto[].class, parameters);
+            StatsDto[] result = response.getBody();
+            return Arrays.stream(result).collect(Collectors.toList());
         }
-        Map<String, Object> parametersUris = Map.of("start", encodeDateTime(start), "end", encodeDateTime(end), "unique", uniq);
-        ResponseEntity<StatsDto[]> response = rest.exchange("/stats?start={start}&end={end}&unique={unique}", HttpMethod.GET, requestEntity, StatsDto[].class, parametersUris);
-        StatsDto[] result = response.getBody();
-        return Arrays.stream(result).collect(Collectors.toList());
     }
 
     private HttpHeaders defaultHeaders() {

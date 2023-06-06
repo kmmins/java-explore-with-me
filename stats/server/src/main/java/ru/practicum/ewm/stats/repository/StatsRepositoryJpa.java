@@ -13,14 +13,24 @@ import java.util.List;
 public interface StatsRepositoryJpa extends JpaRepository<HitModel, Long> {
 
     @Query(value = "select application, uri, count(remote_ip) as countIp " +
+            "from hits where (date_time between :start and :end) " +
+            "group by application, uri", nativeQuery = true)
+    List<Object[]> findAll(LocalDateTime start, LocalDateTime end);
+
+    @Query(value = "select application, uri, count(distinct remote_ip) as countIp " +
+            "from hits where (date_time between :start and :end) " +
+            "group by application, uri", nativeQuery = true)
+    List<Object[]> findAllUniqueIp(LocalDateTime start, LocalDateTime end);
+
+    @Query(value = "select application, uri, count(remote_ip) as countIp " +
             "from hits where uri in :uris " +
             "and (date_time between :start and :end) " +
             "group by application, uri", nativeQuery = true)
-    List<StatsModel> findStatsByUris(LocalDateTime start, LocalDateTime end, String[] uris);
+    List<Object[]> findStatsByUris(LocalDateTime start, LocalDateTime end, String[] uris);
 
     @Query(value = "select application, uri, count(distinct remote_ip) as countIp " +
             "from hits where uri in :uris " +
             "and (date_time >=:start and date_time =<:end) " +
             "group by application, uri", nativeQuery = true)
-    List<StatsModel> findStatsByUrisUniqueIp(LocalDateTime start, LocalDateTime end, String[] uris);
+    List<Object[]> findStatsByUrisUniqueIp(LocalDateTime start, LocalDateTime end, String[] uris);
 }
