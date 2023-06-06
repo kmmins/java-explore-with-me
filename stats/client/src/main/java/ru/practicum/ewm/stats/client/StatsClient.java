@@ -3,7 +3,6 @@ package ru.practicum.ewm.stats.client;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.ewm.stats.collective.HitDto;
 import ru.practicum.ewm.stats.collective.StatsDto;
