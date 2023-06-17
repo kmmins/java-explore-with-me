@@ -55,11 +55,11 @@ public class CompilationService {
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
         if (pinned) {
             PageRequest pageRequest = PageHelper.createRequest(from, size);
-            var CompPinned = compilationRepository.findAllByPinned(pageRequest, true).getContent();
-            if (CompPinned.size() == 0) {
+            var cPinned = compilationRepository.findAllByPinned(pageRequest, true).getContent();
+            if (cPinned.size() == 0) {
                 return new ArrayList<>();
             }
-            return CompilationConverter.mapToDto(CompPinned);
+            return CompilationConverter.mapToDto(cPinned);
 
         } else {
             PageRequest pageRequest = PageHelper.createRequest(from, size);

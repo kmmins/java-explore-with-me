@@ -20,5 +20,5 @@ public interface RequestRepository extends JpaRepository<RequestModel, Long> {
     RequestModel checkReRequest(Long eventId, Long userId);
 
     @Query(value = "select * from requests where event_id=1?", nativeQuery = true)
-    List<RequestModel> getEventRequests (Long eventId);
+    List<RequestModel> getEventRequests(Long eventId);
 }
