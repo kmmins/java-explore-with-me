@@ -3,14 +3,12 @@ package ru.practicum.ewm.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.exception.ParameterException;
 import ru.practicum.ewm.model.EventSort;
 import ru.practicum.ewm.model.dto.EventDtoFull;
 import ru.practicum.ewm.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -25,16 +23,16 @@ public class PublicEventController {
         this.eventService = eventService;
     }
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    //private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping
-    public List<EventDtoFull> getEventsPublic(@RequestParam String text,
-                                              @RequestParam Long[] categories,
-                                              @RequestParam boolean paid,
-                                              @RequestParam String rangeStart,
-                                              @RequestParam String rangeEnd,
-                                              @RequestParam(required = false) Boolean onlyAvailable,
-                                              @RequestParam String sort,
+    public List<EventDtoFull> getEventsPublic(@RequestParam(required = false) String text,
+                                              @RequestParam(required = false) Long[] categories,
+                                              @RequestParam(required = false) Boolean paid,
+                                              @RequestParam(required = false) LocalDateTime rangeStart,
+                                              @RequestParam(required = false) LocalDateTime rangeEnd,
+                                              @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
+                                              @RequestParam(required = false) EventSort sort,
                                               @RequestParam(required = false, defaultValue = "0") int from,
                                               @RequestParam(required = false, defaultValue = "10") int size,
                                               HttpServletRequest request) {
@@ -42,10 +40,10 @@ public class PublicEventController {
                 text,
                 categories,
                 paid,
-                parseTime(rangeStart),
-                parseTime(rangeEnd),
+                rangeStart,
+                rangeEnd,
                 onlyAvailable,
-                parseEnum(sort),
+                sort,
                 from,
                 size,
                 request);
@@ -63,7 +61,7 @@ public class PublicEventController {
         return eventById;
     }
 
-    private LocalDateTime parseTime(String dateTime) {
+    /*private LocalDateTime parseTime(String dateTime) {
         return LocalDateTime.parse(dateTime, formatter);
     }
 
@@ -75,5 +73,5 @@ public class PublicEventController {
             throw new ParameterException("Unknown state: " + s);
         }
         return e;
-    }
+    }*/
 }

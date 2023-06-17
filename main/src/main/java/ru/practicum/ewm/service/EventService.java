@@ -244,7 +244,7 @@ public class EventService {
     public List<EventDtoFull> getEventsPublic(
             String text,
             Long[] categories,
-            boolean paid,
+            Boolean paid,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
             Boolean onlyAvailable,
@@ -255,16 +255,28 @@ public class EventService {
     ) {
         PageRequest pageRequest = PageHelper.createRequest(from, size);
         var dateTimeNow = LocalDateTime.now();
-        if (rangeStart == null && rangeEnd == null) {
+        if (rangeStart == null) {
             rangeStart = dateTimeNow;
-            rangeEnd = LocalDateTime.of(3000, 1, 1, 1, 1, 0); //?
         }
         QEventModel qModel = QEventModel.eventModel;
-        Predicate predicateAll = qModel.annotation.containsIgnoreCase(text).or(qModel.description.containsIgnoreCase(text))
-                .and(qModel.state.eq(EventState.PUBLISHED))
-                .and(qModel.eventDate.between(rangeStart, rangeEnd))
-                .and(qModel.category.id.in(categories))
-                .and(qModel.paid.eq(paid));
+
+        var predicateAll = qModel.eventDate.after(rangeStart);
+        if (rangeEnd != null) {
+            predicateAll = predicateAll.and(qModel.eventDate.before(rangeEnd));
+        }
+        if (text != null) {
+            predicateAll = predicateAll.and(qModel.annotation.containsIgnoreCase(text).or(qModel.description.containsIgnoreCase(text)));
+        }
+        if (categories != null) {
+            predicateAll = predicateAll.and(qModel.state.eq(EventState.PUBLISHED));
+        }
+        if (categories != null) {
+            predicateAll = predicateAll.and(qModel.category.id.in(categories));
+        }
+        if (paid != null) {
+            predicateAll = predicateAll.and(qModel.paid.eq(paid));
+        }
+
         List<EventModel> foundEvents = new ArrayList<>();
         eventRepository.findAll(predicateAll).forEach(foundEvents::add);
         if (onlyAvailable) {
