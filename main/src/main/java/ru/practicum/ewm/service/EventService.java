@@ -3,7 +3,6 @@ package ru.practicum.ewm.service;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.ewm.converter.CategoryConverter;
 import ru.practicum.ewm.converter.EventConverter;
@@ -261,41 +260,38 @@ public class EventService {
             rangeEnd = LocalDateTime.of(3000, 1, 1, 1, 1, 0); //?
         }
         QEventModel qModel = QEventModel.eventModel;
-        Predicate predicateAvailable = qModel.annotation.containsIgnoreCase(text).or(qModel.description.containsIgnoreCase(text))
-                .and(qModel.state.eq(EventState.PUBLISHED))
-                .and(qModel.eventDate.between(rangeStart, rangeEnd))
-                .and(qModel.category.id.in(categories))
-                .and(qModel.participantLimit.gt(qModel.confirmedRequests))
-                .and(qModel.paid.eq(paid));
         Predicate predicateAll = qModel.annotation.containsIgnoreCase(text).or(qModel.description.containsIgnoreCase(text))
                 .and(qModel.state.eq(EventState.PUBLISHED))
                 .and(qModel.eventDate.between(rangeStart, rangeEnd))
                 .and(qModel.category.id.in(categories))
                 .and(qModel.paid.eq(paid));
-        List<EventModel> allFoundEvents;
+        List<EventModel> foundEvents = new ArrayList<>();
+        eventRepository.findAll(predicateAll).forEach(foundEvents::add);
         if (onlyAvailable) {
-            Page<EventModel> selectOnlyAvailable = eventRepository.findAll(predicateAvailable, pageRequest);
-            allFoundEvents = selectOnlyAvailable.getContent();
-        } else {
-            Page<EventModel> selectAll = eventRepository.findAll(predicateAll, pageRequest);
-            allFoundEvents = selectAll.getContent();
+            foundEvents = foundEvents.stream()
+                    .filter(e -> e.countConfirmedRequests() < e.getParticipantLimit())
+                    .collect(Collectors.toList());
         }
-        if (allFoundEvents.size() == 0) {
+        if (foundEvents.size() == 0) {
             return new ArrayList<>();
         } else {
-            List<EventModel> allFoundEventsSorted = new ArrayList<>();
+            List<EventModel> eventsSorted = new ArrayList<>();
             if (sort.equals(EventSort.EVENT_DATE)) {
-                allFoundEventsSorted = allFoundEvents.stream()
+                eventsSorted = foundEvents.stream()
                         .sorted(Comparator.comparing(EventModel::getEventDate))
+                        .skip(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
             if (sort.equals(EventSort.VIEWS)) {
-                allFoundEventsSorted = allFoundEvents.stream()
+                eventsSorted = foundEvents.stream()
                         .sorted(Comparator.comparing(this::getViews).reversed())
+                        .skip(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
-            statsClient.saveStats("Explore With Me", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
-            return EventConverter.mapToDtoFull(allFoundEventsSorted);
+            statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
+            return EventConverter.mapToDtoFull(eventsSorted);
         }
     }
 
