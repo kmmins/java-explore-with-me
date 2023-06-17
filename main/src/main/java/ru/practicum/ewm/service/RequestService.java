@@ -1,0 +1,82 @@
+package ru.practicum.ewm.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.practicum.ewm.converter.RequestConverter;
+import ru.practicum.ewm.model.dto.RequestDto;
+import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.exception.ParamConflictException;
+import ru.practicum.ewm.model.EventState;
+import ru.practicum.ewm.model.RequestStatus;
+import ru.practicum.ewm.repository.EventRepository;
+import ru.practicum.ewm.repository.RequestRepository;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class RequestService {
+
+    private final RequestRepository requestRepository;
+    private final EventRepository eventRepository;
+
+    @Autowired
+    public RequestService(RequestRepository requestRepository, EventRepository eventRepository) {
+        this.requestRepository = requestRepository;
+        this.eventRepository = eventRepository;
+    }
+
+    //??
+    public RequestDto addRequest(Long userId, Long eventId) {
+        var eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isEmpty()) {
+            throw new NotFoundException("Event with id=" + eventId + " was not found");
+        }
+        var event = eventOpt.get();
+        if (!event.getState().equals(EventState.PUBLISHED)) {
+            throw new ParamConflictException("Unable to participate in an unpublished event");
+        }
+        var checkReRequest = requestRepository.checkReRequest(eventId, userId);
+        if (checkReRequest != null) {
+            throw new ParamConflictException("Unable to add a repeat request");
+        }
+        var checkInitiator = eventRepository.findByIdAndAndInitiator(eventId, userId);
+        if (checkInitiator != null) {
+            throw new ParamConflictException("Initiator cannot be requester");
+        }
+        if (event.getParticipantLimit() > 0) {
+            var countId = event.countConfirmedRequests();
+
+            if (event.getParticipantLimit() >= countId) {
+                throw new ParamConflictException("Request limit with approved status exceeded");
+            }
+        }
+        var created = RequestConverter.convToModel(userId, eventId);
+        created.setCreated(LocalDateTime.now());
+        if (event.getRequestModeration().equals(false)) {
+            created.setStatus(RequestStatus.APPROVED);
+        } else {
+            created.setStatus(RequestStatus.PENDING);
+        }
+        var after = requestRepository.save(created);
+        return RequestConverter.convToDto(after);
+    }
+
+    public List<RequestDto> getRequestsInNotHisEvents(Long userId) {
+        var result = requestRepository.getRequestsInNotHisEvents(userId);
+        if (result.size() == 0) {
+            return new ArrayList<>();
+        }
+        return RequestConverter.mapToDto(result);
+    }
+
+    public RequestDto cancelRequest(Long userId, Long requestId) {
+        var check = requestRepository.findByIdAndAndRequester(requestId, userId);
+        if (check == null) {
+            throw new NotFoundException("Request with id=" + requestId + " from user with id=" + userId + " was not found");
+        }
+        check.setStatus(RequestStatus.CANCELED);
+        return RequestConverter.convToDto(check);
+    }
+}

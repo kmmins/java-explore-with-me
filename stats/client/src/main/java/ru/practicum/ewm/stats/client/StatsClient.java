@@ -35,13 +35,32 @@ public class StatsClient {
     public List<StatsDto> getStats(LocalDateTime start, LocalDateTime end, @Nullable String[] uris, @Nullable boolean uniq) {
         HttpEntity<List<StatsDto>> requestEntity = new HttpEntity<>(defaultHeaders());
         if (uris != null) {
-            Map<String, Object> parametersUris = Map.of("start", encodeDateTime(start), "end", encodeDateTime(end), "uris", uris, "unique", uniq);
-            ResponseEntity<StatsDto[]> response = rest.exchange("/stats?start={start}&end={end}&uris={uris}&unique={unique}", HttpMethod.GET, requestEntity, StatsDto[].class, parametersUris);
+            Map<String, Object> parametersUris = Map.of(
+                    "start", encodeDateTime(start),
+                    "end", encodeDateTime(end),
+                    "uris", uris, "unique", uniq
+            );
+            ResponseEntity<StatsDto[]> response = rest.exchange(
+                    "/stats?start={start}&end={end}&uris={uris}&unique={unique}",
+                    HttpMethod.GET, requestEntity,
+                    StatsDto[].class,
+                    parametersUris
+            );
             StatsDto[] result = response.getBody();
             return Arrays.stream(result).collect(Collectors.toList());
         } else {
-            Map<String, Object> parameters = Map.of("start", encodeDateTime(start), "end", encodeDateTime(end), "unique", uniq);
-            ResponseEntity<StatsDto[]> response = rest.exchange("/stats?start={start}&end={end}&uris={uris}&unique={unique}", HttpMethod.GET, requestEntity, StatsDto[].class, parameters);
+            Map<String, Object> parameters = Map.of(
+                    "start", encodeDateTime(start),
+                    "end", encodeDateTime(end),
+                    "unique", uniq
+            );
+            ResponseEntity<StatsDto[]> response = rest.exchange(
+                    "/stats?start={start}&end={end}&uris={uris}&unique={unique}",
+                    HttpMethod.GET,
+                    requestEntity,
+                    StatsDto[].class,
+                    parameters
+            );
             StatsDto[] result = response.getBody();
             return Arrays.stream(result).collect(Collectors.toList());
         }

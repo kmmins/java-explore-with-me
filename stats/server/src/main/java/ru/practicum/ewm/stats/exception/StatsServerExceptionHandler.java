@@ -16,4 +16,11 @@ public class StatsServerExceptionHandler {
         log.error("Error processing request: {}.", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundStats(final NotFoundException e) {
+        log.error("Error processing request: {}.", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
 }
