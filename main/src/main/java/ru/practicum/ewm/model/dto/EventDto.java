@@ -28,6 +28,7 @@ public class EventDto {
     @NotNull
     private LocationModel location;
     @NotNull
+    @Future
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Integer participantLimit;
