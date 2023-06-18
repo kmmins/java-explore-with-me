@@ -21,7 +21,6 @@ import ru.practicum.ewm.stats.collective.StatsDto;
 import ru.practicum.ewm.util.PageHelper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -323,7 +322,7 @@ public class EventService {
                         .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
-            statsClient.saveStats("ewm-main-service", getUri(request), request.getRemoteAddr(), dateTimeNow);
+            statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
             return EventConverter.mapToDtoFull(eventsSorted);
         }
     }
@@ -334,7 +333,7 @@ public class EventService {
             throw new NotFoundException("Event with id=" + id + " was not found");
         }
         var dateTimeNow = LocalDateTime.now();
-        statsClient.saveStats("ewm-main-service", getUri(request), request.getRemoteAddr(), dateTimeNow);
+        statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
         Long viewsFromStats = getViews(foundEvent);
         var result = EventConverter.convToDtoFull(foundEvent);
         result.setViews(viewsFromStats);
@@ -373,11 +372,5 @@ public class EventService {
         String[] uris = {"/events/{" + id + "}"};
         List<StatsDto> stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
         return stats.get(0).getHits();
-    }
-
-    private String getUri(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        String query = request.getQueryString();
-        return URI.create("http://localhost:8080" + path + query).toString();
     }
 }

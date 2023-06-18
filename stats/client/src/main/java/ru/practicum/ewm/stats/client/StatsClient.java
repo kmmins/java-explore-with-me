@@ -1,9 +1,13 @@
 package ru.practicum.ewm.stats.client;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import ru.practicum.ewm.stats.collective.HitDto;
 import ru.practicum.ewm.stats.collective.StatsDto;
 
@@ -22,8 +26,11 @@ public class StatsClient {
     private final RestTemplate rest;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public StatsClient(RestTemplate rest) {
-        this.rest = rest;
+    public StatsClient(@Value("${ewm-stats-service-server.url}") String serverUrl, RestTemplateBuilder builder) {
+        this.rest = builder
+                .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
+                .requestFactory(HttpComponentsClientHttpRequestFactory::new)
+                .build();
     }
 
 
