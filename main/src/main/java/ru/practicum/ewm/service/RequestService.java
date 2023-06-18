@@ -10,6 +10,7 @@ import ru.practicum.ewm.model.EventState;
 import ru.practicum.ewm.model.RequestStatus;
 import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.repository.RequestRepository;
+import ru.practicum.ewm.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,15 +21,23 @@ public class RequestService {
 
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public RequestService(RequestRepository requestRepository, EventRepository eventRepository) {
+    public RequestService(RequestRepository requestRepository,
+                          EventRepository eventRepository,
+                          UserRepository userRepository) {
         this.requestRepository = requestRepository;
         this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
     }
 
     //??
     public RequestDto addRequest(Long userId, Long eventId) {
+        var userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            throw new NotFoundException("User with id=" + userId + " was not found");
+        }
         var eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isEmpty()) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
@@ -52,7 +61,7 @@ public class RequestService {
                 throw new ParamConflictException("Request limit with approved status exceeded");
             }
         }
-        var created = RequestConverter.convToModel(userId, eventId);
+        var created = RequestConverter.convToModel(userOpt.get(), event);
         created.setCreated(LocalDateTime.now());
         if (event.getRequestModeration().equals(false)) {
             created.setStatus(RequestStatus.APPROVED);
