@@ -3,7 +3,6 @@ package ru.practicum.ewm.model;
 import lombok.*;
 import javax.persistence.*;
 
-
 @Data
 @Entity
 @AllArgsConstructor
