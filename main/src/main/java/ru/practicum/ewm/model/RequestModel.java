@@ -4,7 +4,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-
 @Data
 @Entity
 @AllArgsConstructor
@@ -16,10 +15,12 @@ public class RequestModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long id;
-    @Column(name = "event_id", nullable = false)
-    private Long event;
-    @Column(name = "requester", nullable = false)
-    private Long requester;
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    private EventModel event;
+    @ManyToOne
+    @JoinColumn(name = "requester_id", nullable = false)
+    private UserModel requester;
     @Column(name = "created")
     private LocalDateTime created;
     @Column(name = "status")
