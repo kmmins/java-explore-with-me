@@ -1,7 +1,7 @@
 package ru.practicum.ewm.service;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
@@ -198,21 +198,21 @@ public class EventService {
     ) {
         PageRequest pageRequest = PageHelper.createRequest(from, size);
         QEventModel qModelAdmin = QEventModel.eventModel;
-        BooleanExpression predicate = Expressions.TRUE;
+        BooleanBuilder predicate = new BooleanBuilder();
         if (users != null) {
-            predicate = predicate.and(qModelAdmin.initiator.id.in(users));
+            predicate.and(qModelAdmin.initiator.id.in(users));
         }
         if (states != null) {
-            predicate = predicate.and(qModelAdmin.state.in(states));
+            predicate.and(qModelAdmin.state.in(states));
         }
         if (categories != null) {
-            predicate = predicate.and(qModelAdmin.category.id.in(categories));
+            predicate.and(qModelAdmin.category.id.in(categories));
         }
         if (rangeStart != null) {
-            predicate = predicate.and(qModelAdmin.eventDate.after(rangeStart));
+            predicate.and(qModelAdmin.eventDate.after(rangeStart));
         }
         if (rangeEnd != null) {
-            predicate = predicate.and(qModelAdmin.eventDate.before(rangeEnd));
+            predicate.and(qModelAdmin.eventDate.before(rangeEnd));
         }
         List<EventModel> foundEventsAdmin = new ArrayList<>();
         eventRepository.findAll(predicate).forEach(foundEventsAdmin::add);

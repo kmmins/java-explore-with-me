@@ -1,6 +1,7 @@
 package ru.practicum.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.EventSort;
@@ -29,8 +30,8 @@ public class PublicEventController {
     public List<EventDtoFull> getEventsPublic(@RequestParam(required = false) String text,
                                               @RequestParam(required = false) Long[] categories,
                                               @RequestParam(required = false) Boolean paid,
-                                              @RequestParam(required = false) LocalDateTime rangeStart,
-                                              @RequestParam(required = false) LocalDateTime rangeEnd,
+                                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                               @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
                                               @RequestParam(required = false) EventSort sort,
                                               @RequestParam(required = false, defaultValue = "0") int from,

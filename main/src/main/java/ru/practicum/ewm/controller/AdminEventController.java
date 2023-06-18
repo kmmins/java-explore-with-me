@@ -2,6 +2,7 @@ package ru.practicum.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.EventDtoFull;
@@ -30,8 +31,8 @@ public class AdminEventController {
     public List<EventDtoFull> searchEventsByAdmin(@RequestParam(required = false) Long[] users,
                                                   @RequestParam(required = false) EventState states,
                                                   @RequestParam(required = false) Long[] categories,
-                                                  @RequestParam(required = false) LocalDateTime rangeStart,
-                                                  @RequestParam(required = false) LocalDateTime rangeEnd,
+                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                                   @RequestParam(required = false, defaultValue = "0") int from,
                                                   @RequestParam(required = false, defaultValue = "10") int size) {
         var foundedEvents = eventService.searchEventsAdmin(
