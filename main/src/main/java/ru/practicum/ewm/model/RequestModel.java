@@ -18,7 +18,7 @@ public class RequestModel {
     private final Long id;
     @Column(name = "event_id", nullable = false)
     private Long event;
-    @Column(name = "requester", nullable = false)
+    @Column(name = "requester_id", nullable = false)
     private Long requester;
     @Column(name = "created")
     private LocalDateTime created;
