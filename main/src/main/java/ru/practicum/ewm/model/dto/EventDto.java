@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.LocationModel;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -16,10 +18,16 @@ import java.time.LocalDateTime;
 public class EventDto {
 
     @NotBlank
+    @Min(3)
+    @Max(120)
     private String title;
     @NotBlank
+    @Min(20)
+    @Max(7000)
     private String description;
     @NotBlank
+    @Min(20)
+    @Max(2000)
     private String annotation;
     @NotNull
     private Long category;

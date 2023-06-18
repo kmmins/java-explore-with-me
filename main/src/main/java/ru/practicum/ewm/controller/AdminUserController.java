@@ -33,7 +33,7 @@ public class AdminUserController {
     }
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam Long[] ids,
+    public List<UserDto> getUsers(@RequestParam(required = false) Long[] ids,
                                   @RequestParam(required = false, defaultValue = "0") int from,
                                   @RequestParam(required = false, defaultValue = "10") int size) {
         var users = userService.getUsers(ids, from, size);
@@ -44,6 +44,7 @@ public class AdminUserController {
 
 
     @DeleteMapping("/{userId}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
         log.info("[DELETE /admin/users/{userId}] (Admin). Delete user (id): {}", userId);

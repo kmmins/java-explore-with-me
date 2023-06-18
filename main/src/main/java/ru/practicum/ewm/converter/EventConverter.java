@@ -49,6 +49,7 @@ public class EventConverter {
 
     public static EventDtoFull convToDtoFull(EventModel model) {
         return new EventDtoFull(
+                model.getId(),
                 model.getTitle(),
                 model.getDescription(),
                 model.getAnnotation(),

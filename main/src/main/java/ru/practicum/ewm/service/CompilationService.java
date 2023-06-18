@@ -60,7 +60,6 @@ public class CompilationService {
                 return new ArrayList<>();
             }
             return CompilationConverter.mapToDto(cPinned);
-
         } else {
             PageRequest pageRequest = PageHelper.createRequest(from, size);
             var allComp = compilationRepository.findAll(pageRequest).getContent();
