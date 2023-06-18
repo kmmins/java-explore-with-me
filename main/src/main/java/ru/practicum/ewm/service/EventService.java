@@ -1,6 +1,7 @@
 package ru.practicum.ewm.service;
 
-import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
@@ -189,7 +190,7 @@ public class EventService {
 
     public List<EventDtoFull> searchEventsAdmin(
             Long[] users,
-            EventState[] states,
+            EventState states,
             Long[] categories,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
@@ -198,16 +199,32 @@ public class EventService {
     ) {
         PageRequest pageRequest = PageHelper.createRequest(from, size);
         QEventModel qModelAdmin = QEventModel.eventModel;
-        Predicate predicate = qModelAdmin.state.in(states)
-                .and(qModelAdmin.initiator.id.in(users))
-                .and(qModelAdmin.category.id.in(categories))
-                .and(qModelAdmin.eventDate.between(rangeStart, rangeEnd));
-
-        var allFoundEventsAdmin = eventRepository.findAll(predicate, pageRequest);
-        if (allFoundEventsAdmin.getContent().size() == 0) {
+        BooleanExpression predicate = Expressions.TRUE;
+        if (users != null) {
+            predicate = predicate.and(qModelAdmin.initiator.id.in(users));
+        }
+        if (states != null) {
+            predicate = predicate.and(qModelAdmin.state.in(states));
+        }
+        if (categories != null) {
+            predicate = predicate.and(qModelAdmin.category.id.in(categories));
+        }
+        if (rangeStart != null) {
+            predicate = predicate.and(qModelAdmin.eventDate.after(rangeStart));
+        }
+        if (rangeEnd != null) {
+            predicate = predicate.and(qModelAdmin.eventDate.before(rangeEnd));
+        }
+        List<EventModel> foundEventsAdmin = new ArrayList<>();
+        eventRepository.findAll(predicate).forEach(foundEventsAdmin::add);
+        if (foundEventsAdmin.size() == 0) {
             return new ArrayList<>();
         }
-        return EventConverter.mapToDtoFull(allFoundEventsAdmin.getContent());
+        List<EventModel> pageList = foundEventsAdmin.stream()
+                .skip(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
+                .collect(Collectors.toList());
+        return EventConverter.mapToDtoFull(pageList);
     }
 
     public EventDtoFull updateEventByAdmin(Long eventId, EventUpdateDto eventDto) {
@@ -240,7 +257,6 @@ public class EventService {
         return EventConverter.convToDtoFull(after);
     }
 
-    //??
     public List<EventDtoFull> getEventsPublic(
             String text,
             Long[] categories,
@@ -259,8 +275,7 @@ public class EventService {
             rangeStart = dateTimeNow;
         }
         QEventModel qModel = QEventModel.eventModel;
-
-        var predicateAll = qModel.eventDate.after(rangeStart);
+        BooleanExpression predicateAll = qModel.eventDate.after(rangeStart);
         if (rangeEnd != null) {
             predicateAll = predicateAll.and(qModel.eventDate.before(rangeEnd));
         }
@@ -307,7 +322,6 @@ public class EventService {
         }
     }
 
-    //??
     public EventDtoFull getEventByIdPublic(Long id, HttpServletRequest request) {
         EventModel foundEvent = eventRepository.findByIdPublished(id, EventState.PUBLISHED.toString()); //приджоинить конф реквест для этого квента
         if (foundEvent == null) {

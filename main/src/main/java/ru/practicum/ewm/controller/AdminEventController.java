@@ -6,12 +6,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.EventDtoFull;
 import ru.practicum.ewm.model.dto.EventUpdateDto;
-import ru.practicum.ewm.exception.ParameterException;
 import ru.practicum.ewm.model.EventState;
 import ru.practicum.ewm.service.EventService;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -21,7 +19,7 @@ import java.util.List;
 public class AdminEventController {
 
     private final EventService eventService;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    //private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public AdminEventController(EventService eventService) {
@@ -29,19 +27,19 @@ public class AdminEventController {
     }
 
     @GetMapping
-    public List<EventDtoFull> searchEventsByAdmin(@RequestParam Long[] users,
-                                                  @RequestParam String[] states,
-                                                  @RequestParam Long[] categories,
-                                                  @RequestParam String rangeStart,
-                                                  @RequestParam String rangeEnd,
+    public List<EventDtoFull> searchEventsByAdmin(@RequestParam(required = false) Long[] users,
+                                                  @RequestParam(required = false) EventState states,
+                                                  @RequestParam(required = false) Long[] categories,
+                                                  @RequestParam(required = false) LocalDateTime rangeStart,
+                                                  @RequestParam(required = false) LocalDateTime rangeEnd,
                                                   @RequestParam(required = false, defaultValue = "0") int from,
                                                   @RequestParam(required = false, defaultValue = "10") int size) {
         var foundedEvents = eventService.searchEventsAdmin(
                 users,
-                parseEnum(states),
+                states,
                 categories,
-                parseTime(rangeStart),
-                parseTime(rangeEnd),
+                rangeStart,
+                rangeEnd,
                 from,
                 size
         );
@@ -59,7 +57,7 @@ public class AdminEventController {
         return updatedEventByAdmin;
     }
 
-    private LocalDateTime parseTime(String dateTime) {
+    /*private LocalDateTime parseTime(String dateTime) {
         return LocalDateTime.parse(dateTime, formatter);
     }
 
@@ -73,5 +71,5 @@ public class AdminEventController {
             }
         }
         return result;
-    }
+    }*/
 }
