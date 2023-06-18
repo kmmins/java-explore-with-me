@@ -322,7 +322,7 @@ public class EventService {
                         .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
-            statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
+            statsClient.saveStats("ewm-main-service", getFullURL(request), request.getRemoteAddr(), dateTimeNow);
             return EventConverter.mapToDtoFull(eventsSorted);
         }
     }
@@ -333,7 +333,7 @@ public class EventService {
             throw new NotFoundException("Event with id=" + id + " was not found");
         }
         var dateTimeNow = LocalDateTime.now();
-        statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
+        statsClient.saveStats("ewm-main-service", getFullURL(request), request.getRemoteAddr(), dateTimeNow);
         Long viewsFromStats = getViews(foundEvent);
         var result = EventConverter.convToDtoFull(foundEvent);
         result.setViews(viewsFromStats);
@@ -372,5 +372,15 @@ public class EventService {
         String[] uris = {"/events/{" + id + "}"};
         List<StatsDto> stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
         return stats.get(0).getHits();
+    }
+
+    private String getFullURL(HttpServletRequest request) {
+        StringBuilder requestURL = new StringBuilder(request.getRequestURL().toString());
+        String queryString = request.getQueryString();
+        if (queryString == null) {
+            return requestURL.toString();
+        } else {
+            return requestURL.append('?').append(queryString).toString();
+        }
     }
 }
