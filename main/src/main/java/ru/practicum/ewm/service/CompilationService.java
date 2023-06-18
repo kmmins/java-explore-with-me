@@ -53,16 +53,15 @@ public class CompilationService {
     }
 
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
+        PageRequest pageRequest = PageHelper.createRequest(from, size);
         if (pinned) {
-            PageRequest pageRequest = PageHelper.createRequest(from, size);
-            var cPinned = compilationRepository.findAllByPinned(pageRequest, true).getContent();
-            if (cPinned.size() == 0) {
+            var compilationPinned = compilationRepository.findAllByPinned(true, pageRequest).getContent();
+            if (compilationPinned.size() == 0) {
                 return new ArrayList<>();
             }
-            return CompilationConverter.mapToDto(cPinned);
+            return CompilationConverter.mapToDto(compilationPinned);
         } else {
-            PageRequest pageRequest = PageHelper.createRequest(from, size);
-            var allComp = compilationRepository.findAll(pageRequest).getContent();
+            var allComp = compilationRepository.findAllByPinned(false, pageRequest).getContent();
             if (allComp.size() == 0) {
                 return new ArrayList<>();
             }

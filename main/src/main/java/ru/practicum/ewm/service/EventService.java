@@ -61,23 +61,22 @@ public class EventService {
         if (duration.toSeconds() <= 7200) {
             throw new ParamConflictException("Event date must be not earlier than two hours later");
         }
-        var created = EventConverter.convToModel(checkUser.get(), eventDto);
-        Long catId = eventDto.getCategory();
-        CategoryModel cat = CategoryConverter.convToModel(categoryService.getCategoryById(catId));
-        created.setCategory(cat);
-        created.setState(EventState.PENDING);
-
+        var createdEvent = EventConverter.convToModel(checkUser.get(), eventDto);
+        var category = CategoryConverter.convToModel(categoryService.getCategoryById(eventDto.getCategory()));
+        createdEvent.setCategory(category);
+        createdEvent.setState(EventState.PENDING);
         var check = locationRepository.findByLatAndLon(eventDto.getLocation().getLat(), eventDto.getLocation().getLon());
         if (check.size() == 0) {
             LocationModel lc = new LocationModel();
             lc.setLat(eventDto.getLocation().getLat());
             lc.setLon(eventDto.getLocation().getLon());
             var after = locationRepository.save(lc);
-            created.setLocation(after);
+            createdEvent.setLocation(after);
         } else {
-            created.setLocation(check.get(0));
+            createdEvent.setLocation(check.get(0));
         }
-        return EventConverter.convToDtoFull(eventRepository.save(created));
+        var afterCreate = eventRepository.save(createdEvent);
+        return EventConverter.convToDtoFull(afterCreate);
     }
 
     public List<EventDto> getAllEventsByInitiatorPrivate(Long userId, int from, int size) {

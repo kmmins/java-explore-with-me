@@ -9,5 +9,5 @@ import ru.practicum.ewm.model.CompilationModel;
 @EnableJpaRepositories
 public interface CompilationRepository extends JpaRepository<CompilationModel, Long> {
 
-    Page<CompilationModel> findAllByPinned(PageRequest pageRequest, Boolean pinned);
+    Page<CompilationModel> findAllByPinned(Boolean pinned, PageRequest pageRequest);
 }
