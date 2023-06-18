@@ -10,6 +10,7 @@ import ru.practicum.ewm.converter.EventConverter;
 import ru.practicum.ewm.converter.RequestConverter;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.exception.ParamConflictException;
+import ru.practicum.ewm.exception.ParameterException;
 import ru.practicum.ewm.model.*;
 import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.repository.EventRepository;
@@ -104,7 +105,7 @@ public class EventService {
         var dateTimeNow = LocalDateTime.now();
         Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
         if (duration.toSeconds() <= 7200) {
-            throw new ParamConflictException("Event date must be not earlier than two hours later");
+            throw new ParameterException("Event date must be not earlier than two hours later");
         }
         if (eventToUpd.getState().equals(EventState.PUBLISHED)) {
             throw new ParamConflictException("Updated event must be not published");
@@ -232,9 +233,11 @@ public class EventService {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
         var eventToUpdAdmin = check.get();
-        Duration duration = Duration.between(eventToUpdAdmin.getPublishedOn(), eventToUpdAdmin.getEventDate());
-        if (duration.toSeconds() <= 3600) {
-            throw new ParamConflictException("Event date must be not earlier than one hour before published");
+        if (eventDto.getEventDate() != null) {
+            Duration duration = Duration.between(eventToUpdAdmin.getPublishedOn(), eventToUpdAdmin.getEventDate());
+            if (duration.toSeconds() <= 3600) {
+                throw new ParamConflictException("Event date must be not earlier than one hour before published");
+            }
         }
         eventUpdateFields(eventDto, eventToUpdAdmin);
         if (eventDto.getStateAction() != null) {
@@ -328,7 +331,7 @@ public class EventService {
     }
 
     public EventDtoFull getEventByIdPublic(Long id, HttpServletRequest request) {
-        EventModel foundEvent = eventRepository.findByIdPublished(id, EventState.PUBLISHED.toString()); //приджоинить конф реквест для этого квента
+        EventModel foundEvent = eventRepository.findByIdPublished(id, EventState.PUBLISHED.toString());
         if (foundEvent == null) {
             throw new NotFoundException("Event with id=" + id + " was not found");
         }
