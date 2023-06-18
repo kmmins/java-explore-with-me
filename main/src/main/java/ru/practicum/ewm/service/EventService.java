@@ -21,6 +21,7 @@ import ru.practicum.ewm.stats.collective.StatsDto;
 import ru.practicum.ewm.util.PageHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -322,7 +323,7 @@ public class EventService {
                         .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
-            statsClient.saveStats("ewm-main-service", getFullURL(request), request.getRemoteAddr(), dateTimeNow);
+            statsClient.saveStats("ewm-main-service", getUri(request), request.getRemoteAddr(), dateTimeNow);
             return EventConverter.mapToDtoFull(eventsSorted);
         }
     }
@@ -333,7 +334,7 @@ public class EventService {
             throw new NotFoundException("Event with id=" + id + " was not found");
         }
         var dateTimeNow = LocalDateTime.now();
-        statsClient.saveStats("ewm-main-service", getFullURL(request), request.getRemoteAddr(), dateTimeNow);
+        statsClient.saveStats("ewm-main-service", getUri(request), request.getRemoteAddr(), dateTimeNow);
         Long viewsFromStats = getViews(foundEvent);
         var result = EventConverter.convToDtoFull(foundEvent);
         result.setViews(viewsFromStats);
@@ -374,13 +375,9 @@ public class EventService {
         return stats.get(0).getHits();
     }
 
-    private String getFullURL(HttpServletRequest request) {
-        StringBuilder requestURL = new StringBuilder(request.getRequestURL().toString());
-        String queryString = request.getQueryString();
-        if (queryString == null) {
-            return requestURL.toString();
-        } else {
-            return requestURL.append('?').append(queryString).toString();
-        }
+    private String getUri(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String query = request.getQueryString();
+        return URI.create("http://localhost:8080" + path + query).toString();
     }
 }
