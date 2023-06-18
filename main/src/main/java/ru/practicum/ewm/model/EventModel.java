@@ -32,18 +32,18 @@ public class EventModel {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private LocationModel location;
-    @Column(name = "eventDate")
+    @Column(name = "event_date")
     private LocalDateTime eventDate;
-    @Column(name = "createdOn")
+    @Column(name = "created_on")
     private LocalDateTime createdOn;
-    @Column(name = "publishedOn")
+    @Column(name = "published_on")
     private LocalDateTime publishedOn;
-    @Column(name = "participantLimit")
+    @Column(name = "participant_limit")
     private Integer participantLimit;
     @OneToMany
     @JoinColumn(name = "event_id")
     private List<RequestModel> allRequests;
-    @Column(name = "requestModeration")
+    @Column(name = "request_moderation")
     private Boolean requestModeration;
     @Column(name = "paid")
     private Boolean paid;
