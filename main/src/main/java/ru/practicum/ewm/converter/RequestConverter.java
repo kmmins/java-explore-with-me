@@ -1,7 +1,5 @@
 package ru.practicum.ewm.converter;
 
-import ru.practicum.ewm.model.EventModel;
-import ru.practicum.ewm.model.UserModel;
 import ru.practicum.ewm.model.dto.RequestDto;
 import ru.practicum.ewm.model.RequestModel;
 
@@ -10,17 +8,17 @@ import java.util.List;
 
 public class RequestConverter {
 
-    public static RequestModel convToModel(UserModel user, EventModel event) {
+    public static RequestModel convToModel(Long userId, Long eventId) {
         RequestModel model = new RequestModel();
-        model.setEvent(event);
-        model.setRequester(user);
+        model.setEvent(eventId);
+        model.setRequester(userId);
         return model;
     }
 
     public static RequestDto convToDto(RequestModel model) {
         RequestDto dto = new RequestDto();
-        dto.setEvent(model.getEvent().getId());
-        dto.setRequester(model.getRequester().getId());
+        dto.setEvent(model.getEvent());
+        dto.setRequester(model.getRequester());
         dto.setCreated(model.getCreated());
         dto.setStatus(model.getStatus());
         return dto;

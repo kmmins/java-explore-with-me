@@ -61,7 +61,7 @@ public class RequestService {
                 throw new ParamConflictException("Request limit with approved status exceeded");
             }
         }
-        var created = RequestConverter.convToModel(userOpt.get(), event);
+        var created = RequestConverter.convToModel(userId, eventId);
         created.setCreated(LocalDateTime.now());
         if (event.getRequestModeration().equals(false)) {
             created.setStatus(RequestStatus.APPROVED);
