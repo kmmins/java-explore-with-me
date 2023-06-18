@@ -30,11 +30,4 @@ public class MainHandler {
         log.error("Incorrectly made request. {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleServerError(final Throwable e) {
-        log.error("При обработке запроса возникла ошибка: {}.", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
 }
