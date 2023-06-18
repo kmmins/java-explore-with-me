@@ -302,14 +302,20 @@ public class EventService {
             return new ArrayList<>();
         } else {
             List<EventModel> eventsSorted = new ArrayList<>();
-            if (sort.equals(EventSort.EVENT_DATE)) {
+            if (sort == null) {
+                eventsSorted = foundEvents.stream()
+                        .skip(pageRequest.getOffset())
+                        .limit(pageRequest.getPageSize())
+                        .collect(Collectors.toList());
+            }
+            if (sort != null && sort.equals(EventSort.EVENT_DATE)) {
                 eventsSorted = foundEvents.stream()
                         .sorted(Comparator.comparing(EventModel::getEventDate))
                         .skip(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
-            if (sort.equals(EventSort.VIEWS)) {
+            if (sort != null && sort.equals(EventSort.VIEWS)) {
                 eventsSorted = foundEvents.stream()
                         .sorted(Comparator.comparing(this::getViews).reversed())
                         .skip(pageRequest.getOffset())
