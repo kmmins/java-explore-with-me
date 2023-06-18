@@ -53,9 +53,11 @@ public class EventModel {
 
     public long countConfirmedRequests() {
         long result = 0L;
-        for (RequestModel rm : allRequests) {
-            if (rm.getStatus().equals(RequestStatus.APPROVED)) {
-                result++;
+        if (allRequests != null) {
+            for (RequestModel rm : allRequests) {
+                if (rm.getStatus().equals(RequestStatus.APPROVED)) {
+                    result++;
+                }
             }
         }
         return result;
