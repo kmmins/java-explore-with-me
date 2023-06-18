@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.EventModel;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
@@ -17,8 +16,7 @@ public class CompilationDto {
 
     private Long id;
     @NotBlank
-    @Min(1)
-    @Max(50)
+    @Size(min = 1, max = 50)
     private String title;
     private Boolean pinned;
     private List<EventModel> events;
