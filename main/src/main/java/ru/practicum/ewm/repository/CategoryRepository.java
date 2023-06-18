@@ -6,4 +6,5 @@ import ru.practicum.ewm.model.CategoryModel;
 
 @EnableJpaRepositories
 public interface CategoryRepository extends JpaRepository<CategoryModel, Long> {
+
 }

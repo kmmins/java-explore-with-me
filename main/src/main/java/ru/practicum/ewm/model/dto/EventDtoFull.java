@@ -1,5 +1,6 @@
 package ru.practicum.ewm.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,11 @@ public class EventDtoFull {
     private CategoryModel category;
     private UserModel initiator;
     private LocationModel location;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private Integer participantLimit;
     private Long confirmedRequests;

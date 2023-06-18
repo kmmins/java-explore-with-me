@@ -89,7 +89,7 @@ public class EventService {
     }
 
     public EventDto getEventByIdPrivate(Long userId, Long eventId) {
-        var result = eventRepository.findByIdAndAndInitiator(userId, eventId);
+        var result = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (result == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
@@ -97,7 +97,7 @@ public class EventService {
     }
 
     public EventDto updateEvent(Long userId, Long eventId, EventUpdateDto eventDto) {
-        var eventToUpd = eventRepository.findByIdAndAndInitiator(userId, eventId);
+        var eventToUpd = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (eventToUpd == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
@@ -125,7 +125,7 @@ public class EventService {
     }
 
     public List<RequestDto> getEventRequests(Long userId, Long eventId) {
-        var check = eventRepository.findByIdAndAndInitiator(userId, eventId);
+        var check = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (check == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
@@ -135,7 +135,7 @@ public class EventService {
 
     //???
     public RequestUpdateResultDto updateStatusRequestsForEvent(Long userId, Long eventId, RequestUpdateDto requestDto) {
-        var thisEvent = eventRepository.findByIdAndAndInitiator(userId, eventId);
+        var thisEvent = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (thisEvent == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
