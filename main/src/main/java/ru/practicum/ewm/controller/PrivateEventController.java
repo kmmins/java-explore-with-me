@@ -55,7 +55,7 @@ public class PrivateEventController {
     public EventDto updateEvent(@PathVariable Long userId,
                                 @PathVariable Long eventId,
                                 @RequestBody EventUpdateDto eventDto) {
-        var updatedEvent = eventService.updateEvent(userId, eventId, eventDto);
+        var updatedEvent = eventService.updateEventPrivate(userId, eventId, eventDto);
         log.info("[PATCH /users/{userId}/events/{eventsId}] (Private). " +
                 "Event {} (id): from user (id): {} update to (dto): {}", userId, eventId, eventDto);
         return updatedEvent;

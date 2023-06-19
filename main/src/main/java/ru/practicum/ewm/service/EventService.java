@@ -97,7 +97,7 @@ public class EventService {
         return EventConverter.convToDto(result);
     }
 
-    public EventDto updateEvent(Long userId, Long eventId, EventUpdateDto eventDto) {
+    public EventDto updateEventPrivate(Long userId, Long eventId, EventUpdateDto eventDto) {
         var eventToUpd = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (eventToUpd == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
@@ -112,16 +112,40 @@ public class EventService {
         if (eventToUpd.getState().equals(EventState.PUBLISHED)) {
             throw new ParamConflictException("Updated event must be not published");
         }
-        eventUpdateFields(eventDto, eventToUpd);
-        if (eventDto.getStateAction() != null) {
-            if (eventDto.getStateAction() == EventStateAction.SEND_TO_REVIEW) {
-                eventToUpd.setState(EventState.PENDING);
-            } else {
-                eventToUpd.setState(EventState.CANCELED);
-            }
+        if (eventDto.getAnnotation() != null) {
+            eventToUpd.setAnnotation(eventDto.getAnnotation());
+        }
+        if (eventDto.getCategory() != null) {
+            eventToUpd.setCategory(eventDto.getCategory());
+        }
+        if (eventDto.getDescription() != null) {
+            eventToUpd.setDescription(eventDto.getDescription());
+        }
+        if (eventDto.getEventDate() != null) {
+            eventToUpd.setEventDate(eventDto.getEventDate());
+        }
+        if (eventDto.getLocation() != null) {
+            eventToUpd.setLocation(eventDto.getLocation());
+        }
+        if (eventDto.getPaid() != null) {
+            eventToUpd.setPaid(eventDto.getPaid());
+        }
+        if (eventDto.getParticipantLimit() != null) {
+            eventToUpd.setParticipantLimit(eventDto.getParticipantLimit());
+        }
+        if (eventDto.getRequestModeration() != null) {
+            eventToUpd.setRequestModeration(eventDto.getRequestModeration());
         }
         if (eventDto.getTitle() != null) {
             eventToUpd.setTitle(eventDto.getTitle());
+        }
+        if (eventDto.getStateAction() != null) {
+            if (eventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
+                eventToUpd.setState(EventState.PENDING);
+            }
+            if (eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
+                eventToUpd.setState(EventState.CANCELED);
+            }
         }
         var after = eventRepository.save(eventToUpd);
         return EventConverter.convToDto(after);
@@ -136,7 +160,6 @@ public class EventService {
         return RequestConverter.mapToDto(listRequests);
     }
 
-    //???
     public RequestUpdateResultDto updateStatusRequestsForEvent(Long userId, Long eventId, RequestUpdateDto requestDto) {
         var thisEvent = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (thisEvent == null) {
@@ -234,27 +257,51 @@ public class EventService {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
         var eventToUpdAdmin = check.get();
-        if (eventDto.getEventDate() != null) {
-            Duration duration = Duration.between(eventToUpdAdmin.getPublishedOn(), eventToUpdAdmin.getEventDate());
-            if (duration.toSeconds() <= 3600) {
-                throw new ParamConflictException("Event date must be not earlier than one hour before published");
-            }
+        if (eventDto.getAnnotation() != null) {
+            eventToUpdAdmin.setAnnotation(eventDto.getAnnotation());
         }
-        eventUpdateFields(eventDto, eventToUpdAdmin);
-        if (eventDto.getStateAction() != null) {
-            if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED)) {
-                throw new ParamConflictException("Cannot update the event because it's not in the right state");
-            }
-            if (eventDto.getStateAction() == EventStateAction.SEND_TO_REVIEW) {
-                eventToUpdAdmin.setState(EventState.PUBLISHED);
-                eventToUpdAdmin.setPublishedOn(LocalDateTime.now());
-            }
-            if (eventDto.getStateAction() == EventStateAction.REJECT_EVENT) {
-                eventToUpdAdmin.setState(EventState.CANCELED);
-            }
+        if (eventDto.getCategory() != null) {
+            eventToUpdAdmin.setCategory(eventDto.getCategory());
+        }
+        if (eventDto.getDescription() != null) {
+            eventToUpdAdmin.setDescription(eventDto.getDescription());
+        }
+        if (eventDto.getLocation() != null) {
+            eventToUpdAdmin.setLocation(eventDto.getLocation());
+        }
+        if (eventDto.getPaid() != null) {
+            eventToUpdAdmin.setPaid(eventDto.getPaid());
+        }
+        if (eventDto.getParticipantLimit() != null) {
+            eventToUpdAdmin.setParticipantLimit(eventDto.getParticipantLimit());
+        }
+        if (eventDto.getRequestModeration() != null) {
+            eventToUpdAdmin.setRequestModeration(eventDto.getRequestModeration());
         }
         if (eventDto.getTitle() != null) {
             eventToUpdAdmin.setTitle(eventDto.getTitle());
+        }
+        if (eventDto.getStateAction() != null) {
+            if (eventDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
+                if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED) || eventToUpdAdmin.getState().equals(EventState.CANCELED)) {
+                    throw new ParamConflictException("Cannot update the event because it's not in the right state");
+                }
+                if (eventDto.getEventDate() != null) {
+                    var datePublish = LocalDateTime.now();
+                    Duration duration = Duration.between(datePublish, eventDto.getEventDate());
+                    if (duration.toSeconds() <= 3600) {
+                        throw new ParamConflictException("Event date must be not earlier than one hour before published");
+                    }
+                    eventToUpdAdmin.setState(EventState.PUBLISHED);
+                    eventToUpdAdmin.setPublishedOn(datePublish);
+                }
+            }
+            if (eventDto.getStateAction().equals(EventStateAction.REJECT_EVENT)) {
+                if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED)) {
+                    throw new ParamConflictException("Cannot update the event because it's not in the right state");
+                }
+                eventToUpdAdmin.setState(EventState.CANCELED);
+            }
         }
         var after = eventRepository.save(eventToUpdAdmin);
         return EventConverter.convToDtoFull(after);
@@ -342,33 +389,6 @@ public class EventService {
         var result = EventConverter.convToDtoFull(foundEvent);
         result.setViews(viewsFromStats);
         return result;
-    }
-
-    private void eventUpdateFields(EventUpdateDto eventDto, EventModel eventToUpdAdmin) {
-        if (eventDto.getAnnotation() != null) {
-            eventToUpdAdmin.setAnnotation(eventDto.getAnnotation());
-        }
-        if (eventDto.getCategory() != null) {
-            eventToUpdAdmin.setCategory(eventDto.getCategory());
-        }
-        if (eventDto.getDescription() != null) {
-            eventToUpdAdmin.setDescription(eventDto.getDescription());
-        }
-        if (eventDto.getEventDate() != null) {
-            eventToUpdAdmin.setEventDate(eventDto.getEventDate());
-        }
-        if (eventDto.getLocation() != null) {
-            eventToUpdAdmin.setLocation(eventDto.getLocation());
-        }
-        if (eventDto.getPaid() != null) {
-            eventToUpdAdmin.setPaid(eventDto.getPaid());
-        }
-        if (eventDto.getParticipantLimit() != null) {
-            eventToUpdAdmin.setParticipantLimit(eventDto.getParticipantLimit());
-        }
-        if (eventDto.getRequestModeration() != null) {
-            eventToUpdAdmin.setRequestModeration(eventDto.getRequestModeration());
-        }
     }
 
     private Long getViews(EventModel event) {
