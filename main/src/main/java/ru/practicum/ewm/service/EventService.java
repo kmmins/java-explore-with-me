@@ -284,7 +284,7 @@ public class EventService {
         if (eventDto.getStateAction() != null) {
             if (eventDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
                 if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED) || eventToUpdAdmin.getState().equals(EventState.CANCELED)) {
-                    throw new ParamConflictException("Cannot update the event because it's not in the right state");
+                    throw new ParamConflictException("Cannot publish event because it's not in the pending state");
                 }
                 if (eventDto.getEventDate() != null) {
                     var datePublish = LocalDateTime.now();
@@ -298,7 +298,7 @@ public class EventService {
             }
             if (eventDto.getStateAction().equals(EventStateAction.REJECT_EVENT)) {
                 if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED)) {
-                    throw new ParamConflictException("Cannot update the event because it's not in the right state");
+                    throw new ParamConflictException("Cannot reject event because it's in the published state");
                 }
                 eventToUpdAdmin.setState(EventState.CANCELED);
             }
