@@ -102,15 +102,15 @@ public class EventService {
         if (eventToUpd == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
+        if (eventToUpd.getState().equals(EventState.PUBLISHED)) {
+            throw new ParamConflictException("Updated event must be not published");
+        }
         var dateTimeNow = LocalDateTime.now();
         if (eventDto.getEventDate() != null) {
             Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
             if (duration.toSeconds() <= 7200) {
                 throw new ParameterException("Event date must be not earlier than two hours later");
             }
-        }
-        if (eventToUpd.getState().equals(EventState.PUBLISHED)) {
-            throw new ParamConflictException("Updated event must be not published");
         }
         if (eventDto.getAnnotation() != null) {
             eventToUpd.setAnnotation(eventDto.getAnnotation());
@@ -146,7 +146,6 @@ public class EventService {
             if (eventToUpd.getState().equals(EventState.PENDING) && eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
                 eventToUpd.setState(EventState.CANCELED);
             }
-            throw new ParamConflictException("Only pending or canceled events can be changed");
         }
         var after = eventRepository.save(eventToUpd);
         return EventConverter.convToDto(after);

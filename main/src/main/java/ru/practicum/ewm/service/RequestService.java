@@ -32,7 +32,6 @@ public class RequestService {
         this.userRepository = userRepository;
     }
 
-    //??
     public RequestDto addRequest(Long userId, Long eventId) {
         var userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
