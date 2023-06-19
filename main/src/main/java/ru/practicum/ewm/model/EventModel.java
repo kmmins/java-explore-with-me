@@ -29,7 +29,7 @@ public class EventModel {
     @ManyToOne
     @JoinColumn(name = "initiator_id")
     private UserModel initiator;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private LocationModel location;
     @Column(name = "event_date")
