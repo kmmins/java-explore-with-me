@@ -97,7 +97,7 @@ public class EventService {
         return EventConverter.convToDto(result);
     }
 
-    public EventDto updateEventPrivate(Long userId, Long eventId, EventUpdateDto eventDto) {
+    public EventDtoFull updateEventPrivate(Long userId, Long eventId, EventUpdateDto eventDto) {
         var eventToUpd = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (eventToUpd == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
@@ -148,7 +148,7 @@ public class EventService {
             }
         }
         var after = eventRepository.save(eventToUpd);
-        return EventConverter.convToDto(after);
+        return EventConverter.convToDtoFull(after);
     }
 
     public List<RequestDto> getEventRequests(Long userId, Long eventId) {
