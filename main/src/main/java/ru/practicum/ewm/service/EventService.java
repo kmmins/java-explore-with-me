@@ -140,11 +140,12 @@ public class EventService {
             eventToUpd.setTitle(eventDto.getTitle());
         }
         if (eventDto.getStateAction() != null) {
-            if (eventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
+            if (eventToUpd.getState().equals(EventState.CANCELED) && eventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
                 eventToUpd.setState(EventState.PENDING);
-            }
-            if (eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
+            } else if (eventToUpd.getState().equals(EventState.PENDING) && eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
                 eventToUpd.setState(EventState.CANCELED);
+            } else {
+                throw new ParamConflictException("Only pending or canceled events can be changed");
             }
         }
         var after = eventRepository.save(eventToUpd);
@@ -223,24 +224,24 @@ public class EventService {
     ) {
         PageRequest pageRequest = PageHelper.createRequest(from, size);
         QEventModel qModelAdmin = QEventModel.eventModel;
-        BooleanBuilder predicate = new BooleanBuilder();
+        BooleanBuilder predicateAdmin = new BooleanBuilder();
         if (users != null) {
-            predicate.and(qModelAdmin.initiator.id.in(users));
+            predicateAdmin.and(qModelAdmin.initiator.id.in(users));
         }
         if (states != null) {
-            predicate.and(qModelAdmin.state.in(states));
+            predicateAdmin.and(qModelAdmin.state.in(states));
         }
         if (categories != null) {
-            predicate.and(qModelAdmin.category.id.in(categories));
+            predicateAdmin.and(qModelAdmin.category.id.in(categories));
         }
         if (rangeStart != null) {
-            predicate.and(qModelAdmin.eventDate.after(rangeStart));
+            predicateAdmin.and(qModelAdmin.eventDate.after(rangeStart));
         }
         if (rangeEnd != null) {
-            predicate.and(qModelAdmin.eventDate.before(rangeEnd));
+            predicateAdmin.and(qModelAdmin.eventDate.before(rangeEnd));
         }
         List<EventModel> foundEventsAdmin = new ArrayList<>();
-        eventRepository.findAll(predicate).forEach(foundEventsAdmin::add);
+        eventRepository.findAll(predicateAdmin).forEach(foundEventsAdmin::add);
         if (foundEventsAdmin.size() == 0) {
             return new ArrayList<>();
         }
@@ -325,25 +326,21 @@ public class EventService {
             rangeStart = dateTimeNow;
         }
         QEventModel qModel = QEventModel.eventModel;
-        BooleanExpression predicateAll = qModel.eventDate.after(rangeStart);
-        if (rangeEnd != null) {
-            predicateAll = predicateAll.and(qModel.eventDate.before(rangeEnd));
+        BooleanExpression predicatePublic = qModel.eventDate.after(rangeStart).and(qModel.state.eq(EventState.PUBLISHED));
+        if (rangeEnd != null && rangeEnd.isAfter(dateTimeNow)) {
+            predicatePublic = predicatePublic.and(qModel.eventDate.before(rangeEnd));
         }
         if (text != null) {
-            predicateAll = predicateAll.and(qModel.annotation.containsIgnoreCase(text).or(qModel.description.containsIgnoreCase(text)));
+            predicatePublic = predicatePublic.and(qModel.annotation.containsIgnoreCase(text).or(qModel.description.containsIgnoreCase(text)));
         }
         if (categories != null) {
-            predicateAll = predicateAll.and(qModel.state.eq(EventState.PUBLISHED));
-        }
-        if (categories != null) {
-            predicateAll = predicateAll.and(qModel.category.id.in(categories));
+            predicatePublic = predicatePublic.and(qModel.category.id.in(categories));
         }
         if (paid != null) {
-            predicateAll = predicateAll.and(qModel.paid.eq(paid));
+            predicatePublic = predicatePublic.and(qModel.paid.eq(paid));
         }
-
         List<EventModel> foundEvents = new ArrayList<>();
-        eventRepository.findAll(predicateAll).forEach(foundEvents::add);
+        eventRepository.findAll(predicatePublic).forEach(foundEvents::add);
         if (onlyAvailable) {
             foundEvents = foundEvents.stream()
                     .filter(e -> e.countConfirmedRequests() < e.getParticipantLimit())
@@ -352,29 +349,29 @@ public class EventService {
         if (foundEvents.size() == 0) {
             return new ArrayList<>();
         } else {
-            List<EventModel> eventsSorted = new ArrayList<>();
+            List<EventModel> eventsPageAndSort = new ArrayList<>();
             if (sort == null) {
-                eventsSorted = foundEvents.stream()
+                eventsPageAndSort = foundEvents.stream()
                         .skip(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
             if (sort != null && sort.equals(EventSort.EVENT_DATE)) {
-                eventsSorted = foundEvents.stream()
+                eventsPageAndSort = foundEvents.stream()
                         .sorted(Comparator.comparing(EventModel::getEventDate))
                         .skip(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
             if (sort != null && sort.equals(EventSort.VIEWS)) {
-                eventsSorted = foundEvents.stream()
+                eventsPageAndSort = foundEvents.stream()
                         .sorted(Comparator.comparing(this::getViews).reversed())
                         .skip(pageRequest.getOffset())
                         .limit(pageRequest.getPageSize())
                         .collect(Collectors.toList());
             }
             statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
-            return EventConverter.mapToDtoFull(eventsSorted);
+            return EventConverter.mapToDtoFull(eventsPageAndSort);
         }
     }
 
