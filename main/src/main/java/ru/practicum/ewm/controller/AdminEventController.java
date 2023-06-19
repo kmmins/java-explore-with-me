@@ -10,6 +10,7 @@ import ru.practicum.ewm.model.dto.EventUpdateDto;
 import ru.practicum.ewm.model.EventState;
 import ru.practicum.ewm.service.EventService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class AdminEventController {
 
     @PatchMapping("/{eventId}")
     public EventDtoFull updateEventByAdmin(@PathVariable Long eventId,
-                                            @RequestBody EventUpdateDto eventDto) {
+                                           @Valid @RequestBody EventUpdateDto eventDto) {
         log.info("eventId: {}, eventDto: {}, eventService: {}", eventId, eventDto, eventService);
         var updatedEventByAdmin = eventService.updateEventByAdmin(eventId, eventDto);
         log.info("[PATCH /admin/events/{eventId}] (Admin). Update event (id): {} to event (dto): {}", eventId, eventDto);

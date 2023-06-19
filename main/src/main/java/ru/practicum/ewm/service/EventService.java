@@ -142,9 +142,7 @@ public class EventService {
         if (thisEvent == null) {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
-
         RequestUpdateResultDto afterUpdateStatus = new RequestUpdateResultDto();
-
         var allRequests = thisEvent.getAllRequests().stream().collect(Collectors.toMap(RequestModel::getId, i -> i));
         var selectedRequests = requestDto.getRequestIds()
                 .stream()
@@ -158,7 +156,6 @@ public class EventService {
         if (check) {
             throw new ParamConflictException("Request must have status PENDING");
         }
-
         if (thisEvent.getRequestModeration().equals(true) || thisEvent.getParticipantLimit() != 0) {
             long confReq = thisEvent.countConfirmedRequests();
             for (RequestModel r : selectedRequests) {
@@ -189,7 +186,6 @@ public class EventService {
                 }
             }
         }
-
         return afterUpdateStatus;
     }
 

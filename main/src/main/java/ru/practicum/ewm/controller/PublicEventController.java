@@ -26,8 +26,6 @@ public class PublicEventController {
         this.eventService = eventService;
     }
 
-    //private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     @GetMapping
     public List<EventDtoFull> getEventsPublic(@RequestParam(required = false) String text,
                                               @RequestParam(required = false) Long[] categories,
@@ -63,18 +61,4 @@ public class PublicEventController {
                 id, request.getRemoteAddr(), request.getRequestURI());
         return eventById;
     }
-
-    /*private LocalDateTime parseTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, formatter);
-    }
-
-    private EventSort parseEnum(String s) {
-        EventSort e;
-        try {
-            e = EventSort.valueOf(s);
-        } catch (IllegalArgumentException exc) {
-            throw new ParameterException("Unknown state: " + s);
-        }
-        return e;
-    }*/
 }
