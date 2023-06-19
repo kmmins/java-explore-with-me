@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
-@RestControllerAdvice
+@RestController
 @RequestMapping("/users/{userId}/events")
 public class PrivateEventController {
 

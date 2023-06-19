@@ -1,6 +1,7 @@
 package ru.practicum.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.CompilationDto;
@@ -10,12 +11,13 @@ import java.util.List;
 
 @Slf4j
 @Validated
-@RestControllerAdvice
+@RestController
 @RequestMapping("/compilations")
 public class PublicCompilationController {
 
     private final CompilationService compilationService;
 
+    @Autowired
     public PublicCompilationController(CompilationService compilationService) {
         this.compilationService = compilationService;
     }

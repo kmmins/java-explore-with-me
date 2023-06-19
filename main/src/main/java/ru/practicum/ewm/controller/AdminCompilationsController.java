@@ -12,7 +12,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @Validated
-@RestControllerAdvice
+@RestController
 @RequestMapping("/admin/compilations")
 public class AdminCompilationsController {
 

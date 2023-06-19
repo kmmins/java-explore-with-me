@@ -1,6 +1,7 @@
 package ru.practicum.ewm.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,13 @@ import java.util.List;
 
 @Slf4j
 @Validated
-@RestControllerAdvice
+@RestController
 @RequestMapping("/events")
 public class PublicEventController {
 
     private final EventService eventService;
 
+    @Autowired
     public PublicEventController(EventService eventService) {
         this.eventService = eventService;
     }

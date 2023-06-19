@@ -10,15 +10,15 @@ import java.util.List;
 @EnableJpaRepositories
 public interface RequestRepository extends JpaRepository<RequestModel, Long> {
 
-    @Query(value = "select * from requests where requester=?1", nativeQuery = true)
+    @Query(value = "select * from requests where requester_id=?1", nativeQuery = true)
     List<RequestModel> getRequestsInNotHisEvents(Long userId);
 
-    @Query(value = "select * from requests where id=?1 and requester =?2", nativeQuery = true)
+    @Query(value = "select * from requests where id=?1 and requester_id =?2", nativeQuery = true)
     RequestModel findByIdAndAndRequester(Long requestId, Long userId);
 
-    @Query(value = "select * from requests where event_id=?1 and requester =?2", nativeQuery = true)
+    @Query(value = "select * from requests where event_id=?1 and requester_id =?2", nativeQuery = true)
     RequestModel checkReRequest(Long eventId, Long userId);
 
-    @Query(value = "select * from requests where event_id=1?", nativeQuery = true)
+    @Query(value = "select * from requests where event_id=?1", nativeQuery = true)
     List<RequestModel> getEventRequests(Long eventId);
 }

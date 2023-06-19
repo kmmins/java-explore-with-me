@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
-@RestControllerAdvice
+@RestController
 @RequestMapping("/users/{userId}/requests")
 public class PrivateRequestController {
 

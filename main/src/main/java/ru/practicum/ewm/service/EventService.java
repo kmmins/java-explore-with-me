@@ -103,9 +103,11 @@ public class EventService {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
         var dateTimeNow = LocalDateTime.now();
-        Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
-        if (duration.toSeconds() <= 7200) {
-            throw new ParameterException("Event date must be not earlier than two hours later");
+        if (eventDto.getEventDate() != null) {
+            Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
+            if (duration.toSeconds() <= 7200) {
+                throw new ParameterException("Event date must be not earlier than two hours later");
+            }
         }
         if (eventToUpd.getState().equals(EventState.PUBLISHED)) {
             throw new ParamConflictException("Updated event must be not published");
@@ -148,6 +150,9 @@ public class EventService {
                 .stream()
                 .map(allRequests::get)
                 .collect(Collectors.toList());
+        if (selectedRequests.stream().anyMatch(Objects::isNull)) {
+            throw new ParameterException("Request not found for this event");
+        }
         boolean check = selectedRequests.stream()
                 .anyMatch(r -> !Objects.equals(r.getStatus(), RequestStatus.PENDING));
         if (check) {

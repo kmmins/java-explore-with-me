@@ -20,7 +20,6 @@ import java.util.List;
 public class AdminEventController {
 
     private final EventService eventService;
-    //private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public AdminEventController(EventService eventService) {
@@ -51,26 +50,11 @@ public class AdminEventController {
     }
 
     @PatchMapping("/{eventId}")
-    private EventDtoFull updateEventByAdmin(@PathVariable Long eventId,
+    public EventDtoFull updateEventByAdmin(@PathVariable Long eventId,
                                             @RequestBody EventUpdateDto eventDto) {
+        log.info("eventId: {}, eventDto: {}, eventService: {}", eventId, eventDto, eventService);
         var updatedEventByAdmin = eventService.updateEventByAdmin(eventId, eventDto);
         log.info("[PATCH /admin/events/{eventId}] (Admin). Update event (id): {} to event (dto): {}", eventId, eventDto);
         return updatedEventByAdmin;
     }
-
-    /*private LocalDateTime parseTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, formatter);
-    }
-
-    private EventState[] parseEnum(String[] states) {
-        EventState[] result = new EventState[states.length];
-        for (int i = 0; i < states.length; i++) {
-            try {
-                result[i] = EventState.valueOf(states[i]);
-            } catch (IllegalArgumentException e) {
-                throw new ParameterException("Unknown state: " + states[i]);
-            }
-        }
-        return result;
-    }*/
 }

@@ -19,7 +19,10 @@ public class CompilationModel {
     private String title;
     @Column(name = "pinned")
     private Boolean pinned;
-    @ManyToMany
-    @JoinColumn(name = "id")
+    @OneToMany
+    @JoinTable(
+            name = "events_compilations",
+            joinColumns = @JoinColumn(name = "compilation_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<EventModel> events;
 }
