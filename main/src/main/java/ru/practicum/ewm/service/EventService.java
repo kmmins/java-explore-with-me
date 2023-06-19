@@ -142,11 +142,11 @@ public class EventService {
         if (eventDto.getStateAction() != null) {
             if (eventToUpd.getState().equals(EventState.CANCELED) && eventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
                 eventToUpd.setState(EventState.PENDING);
-            } else if (eventToUpd.getState().equals(EventState.PENDING) && eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
-                eventToUpd.setState(EventState.CANCELED);
-            } else {
-                throw new ParamConflictException("Only pending or canceled events can be changed");
             }
+            if (eventToUpd.getState().equals(EventState.PENDING) && eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
+                eventToUpd.setState(EventState.CANCELED);
+            }
+            throw new ParamConflictException("Only pending or canceled events can be changed");
         }
         var after = eventRepository.save(eventToUpd);
         return EventConverter.convToDto(after);
@@ -284,7 +284,7 @@ public class EventService {
         }
         if (eventDto.getStateAction() != null) {
             if (eventDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
-                if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED) || eventToUpdAdmin.getState().equals(EventState.CANCELED)) {
+                if (!eventToUpdAdmin.getState().equals(EventState.PENDING)) {
                     throw new ParamConflictException("Cannot publish event because it's not in the pending state");
                 }
                 if (eventDto.getEventDate() != null) {

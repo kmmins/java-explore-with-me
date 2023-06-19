@@ -73,7 +73,7 @@ public class PrivateEventController {
     @PatchMapping("/{eventId}/requests")
     public RequestUpdateResultDto updateStatusRequestsForEvent(@PathVariable Long userId,
                                                                @PathVariable Long eventId,
-                                                               @RequestBody RequestUpdateDto requestDto) {
+                                                               @Valid @RequestBody RequestUpdateDto requestDto) {
         var updatedRequest = eventService.updateStatusRequestsForEvent(userId, eventId, requestDto);
         log.info("[PATCH /users/{userId}/events/{eventId}/requests] (Private). " +
                 "Patch requests for event (id): {}, event made by user (id): {}", eventId, userId);
