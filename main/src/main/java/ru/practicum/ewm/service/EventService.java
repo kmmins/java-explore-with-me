@@ -248,9 +248,7 @@ public class EventService {
                 .skip(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .collect(Collectors.toList());
-        var result = EventConverter.mapToDtoFull(pageList);
-        result.forEach(e -> e.setViews(getViewsDtoFull(e)));
-        return result;
+        return EventConverter.mapToDtoFull(pageList);
     }
 
     public EventDtoFull updateEventByAdmin(Long eventId, EventUpdateDto eventDto) {
@@ -286,13 +284,13 @@ public class EventService {
         if (eventDto.getStateAction() != null) {
             if (eventDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
                 if (!eventToUpdAdmin.getState().equals(EventState.PENDING)) {
-                    throw new ParamConflictException("Cannot publish event because it's not in the pending state");
+                    throw new ParameterException("Cannot publish event because it's not in the pending state");
                 }
                 if (eventDto.getEventDate() != null) {
                     var datePublish = LocalDateTime.now();
                     Duration duration = Duration.between(datePublish, eventDto.getEventDate());
                     if (duration.toSeconds() <= 3600) {
-                        throw new ParamConflictException("Event date must be not earlier than one hour before published");
+                        throw new ParameterException("Event date must be not earlier than one hour before published");
                     }
                     eventToUpdAdmin.setState(EventState.PUBLISHED);
                     eventToUpdAdmin.setPublishedOn(datePublish);
@@ -390,13 +388,6 @@ public class EventService {
     }
 
     private Long getViews(EventModel event) {
-        long id = event.getId();
-        String[] uris = {"/events/{" + id + "}"};
-        List<StatsDto> stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
-        return stats.get(0).getHits();
-    }
-
-    private Long getViewsDtoFull(EventDtoFull event) {
         long id = event.getId();
         String[] uris = {"/events/{" + id + "}"};
         List<StatsDto> stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
