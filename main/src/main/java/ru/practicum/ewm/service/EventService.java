@@ -248,7 +248,9 @@ public class EventService {
                 .skip(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .collect(Collectors.toList());
-        return EventConverter.mapToDtoFull(pageList);
+        var result = EventConverter.mapToDtoFull(pageList);
+        result.forEach(e -> e.setViews(getViewsDtoFull(e)));
+        return result;
     }
 
     public EventDtoFull updateEventByAdmin(Long eventId, EventUpdateDto eventDto) {
@@ -388,6 +390,13 @@ public class EventService {
     }
 
     private Long getViews(EventModel event) {
+        long id = event.getId();
+        String[] uris = {"/events/{" + id + "}"};
+        List<StatsDto> stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
+        return stats.get(0).getHits();
+    }
+
+    private Long getViewsDtoFull(EventDtoFull event) {
         long id = event.getId();
         String[] uris = {"/events/{" + id + "}"};
         List<StatsDto> stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
