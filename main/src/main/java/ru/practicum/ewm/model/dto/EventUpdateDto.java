@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.model.*;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class EventUpdateDto {
     @Size(min = 20, max = 2000)
     private String annotation;
     private CategoryModel category;
+    @Future
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private LocationModel location;
