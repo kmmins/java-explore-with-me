@@ -166,7 +166,8 @@ public class EventService {
             throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
         RequestUpdateResultDto afterUpdateStatus = new RequestUpdateResultDto();
-        var allRequests = thisEvent.getAllRequests().stream().collect(Collectors.toMap(RequestModel::getId, i -> i));
+        var allRequests = thisEvent.getAllRequests().stream()
+                .collect(Collectors.toMap(RequestModel::getId, i -> i));
         var selectedRequests = requestDto.getRequestIds()
                 .stream()
                 .map(allRequests::get)
@@ -183,8 +184,8 @@ public class EventService {
             long confReq = thisEvent.countConfirmedRequests();
             for (RequestModel r : selectedRequests) {
                 if (thisEvent.getParticipantLimit() > confReq) {
-                    if (requestDto.getStatus().equals(RequestUpdateStatus.CONFIRMED)) {
-                        r.setStatus(RequestStatus.APPROVED);
+                    if (requestDto.getStatus().equals(RequestUpdateStatus.APPROVED)) {
+                        r.setStatus(RequestStatus.CONFIRMED);
                         confReq++;
                         if (thisEvent.getParticipantLimit() == confReq) {
                             for (RequestModel rm : thisEvent.getAllRequests()) {
@@ -203,7 +204,7 @@ public class EventService {
                         afterUpdateStatus.getRejectedRequests().add(RequestConverter.convToDto(rSaved));
                     }
                 } else {
-                    if (requestDto.getStatus().equals(RequestUpdateStatus.CONFIRMED)) {
+                    if (requestDto.getStatus().equals(RequestUpdateStatus.APPROVED)) {
                         throw new ParamConflictException("The participant limit has been reached");
                     }
                 }

@@ -42,9 +42,6 @@ public class RequestService {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
         var event = eventOpt.get();
-        if (!event.getState().equals(EventState.PUBLISHED)) {
-            throw new ParamConflictException("Unable to participate in an unpublished event");
-        }
         var checkReRequest = requestRepository.checkReRequest(eventId, userId);
         if (checkReRequest != null) {
             throw new ParamConflictException("Unable to add a repeat request");
@@ -53,18 +50,25 @@ public class RequestService {
         if (checkInitiator != null) {
             throw new ParamConflictException("Initiator cannot be requester");
         }
+        if (event.getState() != EventState.PUBLISHED) {
+            throw new ParamConflictException("Unable to participate in an unpublished event");
+        }
+        var created = RequestConverter.convToModel(userId, eventId);
         if (event.getParticipantLimit() > 0) {
             var countId = event.countConfirmedRequests();
             if (event.getParticipantLimit() >= countId) {
                 throw new ParamConflictException("Request limit with approved status exceeded");
             }
+            created.setCreated(LocalDateTime.now());
+            if (event.getRequestModeration().equals(false)) {
+                created.setStatus(RequestStatus.CONFIRMED);
+            } else {
+                created.setStatus(RequestStatus.PENDING);
+            }
         }
-        var created = RequestConverter.convToModel(userId, eventId);
-        created.setCreated(LocalDateTime.now());
-        if (event.getRequestModeration().equals(false)) {
-            created.setStatus(RequestStatus.APPROVED);
-        } else {
-            created.setStatus(RequestStatus.PENDING);
+        if (event.getParticipantLimit() == 0) {
+            created.setCreated(LocalDateTime.now());
+            created.setStatus(RequestStatus.CONFIRMED);
         }
         var after = requestRepository.save(created);
         return RequestConverter.convToDto(after);
