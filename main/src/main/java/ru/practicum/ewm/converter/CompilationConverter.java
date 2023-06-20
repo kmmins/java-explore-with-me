@@ -18,6 +18,7 @@ public class CompilationConverter {
 
     public static CompilationDto convToDto(CompilationModel model) {
         return new CompilationDto(
+                model.getId(),
                 model.getTitle(),
                 model.getPinned(),
                 model.getEvents()

@@ -27,6 +27,7 @@ public class EventConverter {
 
     public static EventDto convToDto(EventModel model) {
         EventDto dto = new EventDto();
+        dto.setId(model.getId());
         dto.setTitle(model.getTitle());
         dto.setDescription(model.getDescription());
         dto.setAnnotation(model.getAnnotation());

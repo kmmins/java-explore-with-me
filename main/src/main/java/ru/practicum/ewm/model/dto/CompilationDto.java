@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CompilationDto {
 
+    private Long id;
     @NotBlank
     @Size(min = 1, max = 50)
     private String title;

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EventDto {
 
+    private Long id;
     @NotBlank
     @Size(min = 3, max = 120)
     private String title;
