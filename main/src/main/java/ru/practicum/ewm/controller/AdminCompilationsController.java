@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.CompilationDto;
+import ru.practicum.ewm.model.dto.CompilationUpdateDto;
 import ru.practicum.ewm.service.CompilationService;
 
 import javax.validation.Valid;
@@ -33,7 +34,7 @@ public class AdminCompilationsController {
 
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable Long compId,
-                                            @Valid @RequestBody CompilationDto compilationDto) {
+                                            @Valid @RequestBody CompilationUpdateDto compilationDto) {
         var updatedComp = compilationService.updateCompilation(compId, compilationDto);
         log.info("[PATCH /admin/compilations{compId}] (Admin). Compilation (id) {} update to (dto): {}", compId, compilationDto);
         return updatedComp;

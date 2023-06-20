@@ -9,17 +9,15 @@ import java.util.List;
 public class CompilationConverter {
 
     public static CompilationModel convToModel(CompilationDto dto) {
-        return new CompilationModel(
-                dto.getId(),
-                dto.getTitle(),
-                dto.getPinned(),
-                dto.getEvents()
-        );
+        CompilationModel model = new CompilationModel();
+        model.setTitle(dto.getTitle());
+        model.setPinned(dto.getPinned());
+        model.setEvents(dto.getEvents());
+        return model;
     }
 
     public static CompilationDto convToDto(CompilationModel model) {
         return new CompilationDto(
-                model.getId(),
                 model.getTitle(),
                 model.getPinned(),
                 model.getEvents()

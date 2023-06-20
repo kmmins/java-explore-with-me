@@ -7,6 +7,7 @@ import ru.practicum.ewm.converter.CompilationConverter;
 import ru.practicum.ewm.model.dto.CompilationDto;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.model.CompilationModel;
+import ru.practicum.ewm.model.dto.CompilationUpdateDto;
 import ru.practicum.ewm.repository.CompilationRepository;
 import ru.practicum.ewm.util.PageHelper;
 
@@ -29,7 +30,7 @@ public class CompilationService {
         return CompilationConverter.convToDto(after);
     }
 
-    public CompilationDto updateCompilation(Long compId, CompilationDto compilationDto) {
+    public CompilationDto updateCompilation(Long compId, CompilationUpdateDto compilationDto) {
         var check = compilationRepository.findById(compId);
         if (check.isEmpty()) {
             throw new NotFoundException("Compilation with id=" + compId + " was not found");

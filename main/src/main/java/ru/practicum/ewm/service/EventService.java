@@ -257,6 +257,10 @@ public class EventService {
         if (check.isEmpty()) {
             throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
+        var eventToUpdAdmin = check.get();
+        if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED)) {
+            throw new ParamConflictException("Cannot update event because it's not in the pending state");
+        }
         var dateTimeNow = LocalDateTime.now();
         if (eventDto.getEventDate() != null) {
             Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
@@ -264,7 +268,6 @@ public class EventService {
                 throw new ParamConflictException("Event date must be not earlier than two hours later");
             }
         }
-        var eventToUpdAdmin = check.get();
         if (eventDto.getAnnotation() != null) {
             eventToUpdAdmin.setAnnotation(eventDto.getAnnotation());
         }
