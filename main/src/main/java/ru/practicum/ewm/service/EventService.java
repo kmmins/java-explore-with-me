@@ -109,7 +109,7 @@ public class EventService {
         if (eventDto.getEventDate() != null) {
             Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
             if (duration.toSeconds() <= 7200) {
-                throw new ParameterException("Event date must be not earlier than two hours later");
+                throw new ParamConflictException("Event date must be not earlier than two hours later");
             }
         }
         if (eventDto.getAnnotation() != null) {
@@ -284,13 +284,13 @@ public class EventService {
         if (eventDto.getStateAction() != null) {
             if (eventDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
                 if (!eventToUpdAdmin.getState().equals(EventState.PENDING)) {
-                    throw new ParameterException("Cannot publish event because it's not in the pending state");
+                    throw new ParamConflictException("Cannot publish event because it's not in the pending state");
                 }
                 if (eventDto.getEventDate() != null) {
                     var datePublish = LocalDateTime.now();
                     Duration duration = Duration.between(datePublish, eventDto.getEventDate());
                     if (duration.toSeconds() <= 3600) {
-                        throw new ParameterException("Event date must be not earlier than one hour before published");
+                        throw new ParamConflictException("Event date must be not earlier than one hour before published");
                     }
                     eventToUpdAdmin.setState(EventState.PUBLISHED);
                     eventToUpdAdmin.setPublishedOn(datePublish);
