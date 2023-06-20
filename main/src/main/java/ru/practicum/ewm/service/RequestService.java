@@ -55,7 +55,6 @@ public class RequestService {
         }
         if (event.getParticipantLimit() > 0) {
             var countId = event.countConfirmedRequests();
-
             if (event.getParticipantLimit() >= countId) {
                 throw new ParamConflictException("Request limit with approved status exceeded");
             }
@@ -85,6 +84,7 @@ public class RequestService {
             throw new NotFoundException("Request with id=" + requestId + " from user with id=" + userId + " was not found");
         }
         check.setStatus(RequestStatus.CANCELED);
-        return RequestConverter.convToDto(check);
+        var after = requestRepository.save(check);
+        return RequestConverter.convToDto(after);
     }
 }
