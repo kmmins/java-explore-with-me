@@ -108,8 +108,8 @@ public class EventService {
         var dateTimeNow = LocalDateTime.now();
         if (eventDto.getEventDate() != null) {
             Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
-            if (duration.toSeconds() <= 7200) {
-                throw new ParamConflictException("Event date must be not earlier than two hours later");
+            if (eventDto.getEventDate().isBefore(dateTimeNow) || duration.toSeconds() <= 7200) {
+                throw new ParameterException("Event date must be not earlier than two hours later");
             }
         }
         if (eventDto.getAnnotation() != null) {
@@ -289,8 +289,8 @@ public class EventService {
                 if (eventDto.getEventDate() != null) {
                     var datePublish = LocalDateTime.now();
                     Duration duration = Duration.between(datePublish, eventDto.getEventDate());
-                    if (duration.toSeconds() <= 3600) {
-                        throw new ParamConflictException("Event date must be not earlier than one hour before published");
+                    if (eventDto.getEventDate().isBefore(datePublish) || duration.toSeconds() <= 3600) {
+                        throw new ParameterException("Event date must be not earlier than one hour before published");
                     }
                     eventToUpdAdmin.setState(EventState.PUBLISHED);
                     eventToUpdAdmin.setPublishedOn(datePublish);
