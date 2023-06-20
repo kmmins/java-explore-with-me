@@ -21,7 +21,6 @@ public class EventConverter {
         model.setParticipantLimit(dto.getParticipantLimit());
         model.setRequestModeration(dto.getRequestModeration());
         model.setPaid(dto.getPaid());
-
         return model;
     }
 
@@ -36,7 +35,6 @@ public class EventConverter {
         dto.setParticipantLimit(model.getParticipantLimit());
         dto.setRequestModeration(model.getRequestModeration());
         dto.setPaid(model.getPaid());
-
         return dto;
     }
 

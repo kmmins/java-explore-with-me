@@ -17,6 +17,7 @@ public class RequestConverter {
 
     public static RequestDto convToDto(RequestModel model) {
         RequestDto dto = new RequestDto();
+        dto.setId(model.getId());
         dto.setEvent(model.getEvent());
         dto.setRequester(model.getRequester());
         dto.setCreated(model.getCreated());
