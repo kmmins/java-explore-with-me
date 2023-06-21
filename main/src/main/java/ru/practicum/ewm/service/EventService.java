@@ -26,6 +26,7 @@ import ru.practicum.ewm.util.PageHelper;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,21 +85,23 @@ public class EventService {
         return EventConverter.convToDtoFull(afterCreate);
     }
 
-    public List<EventDto> getAllEventsByInitiatorPrivate(Long userId, int from, int size) {
+    public List<EventShortDto> getAllEventsByInitiatorPrivate(Long userId, int from, int size) {
         PageRequest pageRequest = PageHelper.createRequest(from, size);
         var result = eventRepository.findAllByInitiator(userId, pageRequest).getContent();
         if (result.size() == 0) {
             return new ArrayList<>();
         }
-        return EventConverter.mapToDto(result);
+        return EventConverter.mapToShortDto(result);
     }
 
-    public EventDto getEventByIdPrivate(Long userId, Long eventId) {
-        var result = eventRepository.findByIdAndAndInitiator(eventId, userId);
-        if (result == null) {
+    public EventDtoFull getEventByIdPrivate(Long userId, Long eventId) {
+        var foundEvent = eventRepository.findByIdAndAndInitiator(eventId, userId);
+        if (foundEvent == null) {
             throw new MainNotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
-        return EventConverter.convToDto(result);
+        var result = EventConverter.convToDtoFull(foundEvent);
+        result.setViews(getViews(foundEvent));
+        return result;
     }
 
     public EventDtoFull updateEventPrivate(Long userId, Long eventId, EventUpdateDto eventDto) {
@@ -258,7 +261,7 @@ public class EventService {
                 .limit(pageRequest.getPageSize())
                 .collect(Collectors.toList());
         var result = EventConverter.mapToDtoFull(pageList);
-        setViewsForListFullDto(result);
+        setViewsForListShortDto(result);
         return result;
     }
 
@@ -323,7 +326,7 @@ public class EventService {
         return EventConverter.convToDtoFull(after);
     }
 
-    public List<EventDtoFull> getEventsPublic(
+    public List<EventShortDto> getEventsPublic(
             String text,
             Long[] categories,
             Boolean paid,
@@ -389,8 +392,8 @@ public class EventService {
                         .collect(Collectors.toList());
             }
             statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);//?
-            var result = EventConverter.mapToDtoFull(eventsPageAndSort);
-            setViewsForListFullDto(result);
+            var result = EventConverter.mapToShortDto(eventsPageAndSort);
+            setViewsForListShortDto(result);
             return result;
         }
     }
@@ -420,17 +423,14 @@ public class EventService {
         return stats.get(0).getHits();
     }
 
-    private void setViewsForListFullDto(List<EventDtoFull> events) {
+    private void setViewsForListShortDto(List<? extends EventShortDto> events) {
         if (events.size() != 0) {
             String[] uris = new String[events.size()];
             for (int i = 0; i < uris.length; i++) {
                 long id = events.get(i).getId();
                 uris[i] = "/events/{" + id + "}";
             }
-            var min = events.stream()
-                    .min(Comparator.comparing(EventDtoFull::getCreatedOn))
-                    .orElse(events.get(0));
-            LocalDateTime start = min.getCreatedOn();
+            LocalDateTime start = LocalDateTime.ofEpochSecond(0, 0,  ZoneOffset.UTC);
             LocalDateTime dateTime = LocalDateTime.now();
             List<StatsDto> stats = Arrays.asList(new StatsDto[events.size()]);
             try {

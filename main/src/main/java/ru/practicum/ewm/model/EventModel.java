@@ -24,13 +24,13 @@ public class EventModel {
     @Column(name = "annotation", nullable = false)
     private String annotation;
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private CategoryModel category;
     @ManyToOne
-    @JoinColumn(name = "initiator_id")
+    @JoinColumn(name = "initiator_id", nullable = false)
     private UserModel initiator;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id")
+    @ManyToOne/*(cascade = CascadeType.ALL)*/
+    @JoinColumn(name = "location_id", nullable = false)
     private LocationModel location;
     @Column(name = "event_date")
     private LocalDateTime eventDate;

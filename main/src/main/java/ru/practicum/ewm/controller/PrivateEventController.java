@@ -35,7 +35,7 @@ public class PrivateEventController {
     }
 
     @GetMapping
-    public List<EventDto> getEventsByInitiator(@PathVariable Long userId,
+    public List<EventShortDto> getEventsByInitiator(@PathVariable Long userId,
                                                @RequestParam(required = false, defaultValue = "0") int from,
                                                @RequestParam(required = false, defaultValue = "10") int size) {
         var events = eventService.getAllEventsByInitiatorPrivate(userId, from, size);
@@ -45,7 +45,7 @@ public class PrivateEventController {
     }
 
     @GetMapping("/{eventId}")
-    public EventDto getEventByIdPrivate(@PathVariable Long userId, @PathVariable Long eventId) {
+    public EventDtoFull getEventByIdPrivate(@PathVariable Long userId, @PathVariable Long eventId) {
         var eventById = eventService.getEventByIdPrivate(userId, eventId);
         log.info("[GET /users/{userId}/events/{eventId}] (Private). Get event (id): {} from user (id): {}", eventId, userId);
         return eventById;

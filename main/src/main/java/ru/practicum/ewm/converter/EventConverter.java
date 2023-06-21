@@ -1,9 +1,11 @@
 package ru.practicum.ewm.converter;
 
 import ru.practicum.ewm.model.dto.EventDto;
+import ru.practicum.ewm.model.dto.EventShortDto;
 import ru.practicum.ewm.model.dto.EventDtoFull;
 import ru.practicum.ewm.model.EventModel;
 import ru.practicum.ewm.model.UserModel;
+import ru.practicum.ewm.model.dto.LocationDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,6 @@ public class EventConverter {
         model.setDescription(dto.getDescription());
         model.setAnnotation(dto.getAnnotation());
         model.setInitiator(user);
-        model.setLocation(dto.getLocation());
         model.setEventDate(dto.getEventDate());
         model.setParticipantLimit(dto.getParticipantLimit());
         model.setRequestModeration(dto.getRequestModeration());
@@ -24,24 +25,23 @@ public class EventConverter {
         return model;
     }
 
-    public static EventDto convToDto(EventModel model) {
-        EventDto dto = new EventDto();
+    public static EventShortDto convToShortDto(EventModel model) {
+        EventShortDto dto = new EventShortDto();
         dto.setId(model.getId());
         dto.setTitle(model.getTitle());
         dto.setDescription(model.getDescription());
         dto.setAnnotation(model.getAnnotation());
-        dto.setLocation(model.getLocation());
+        dto.setCategory(CategoryConverter.convToDto(model.getCategory()));
+        dto.setInitiator(UserConverter.convToDto(model.getInitiator()));
         dto.setEventDate(model.getEventDate());
-        dto.setParticipantLimit(model.getParticipantLimit());
-        dto.setRequestModeration(model.getRequestModeration());
         dto.setPaid(model.getPaid());
         return dto;
     }
 
-    public static List<EventDto> mapToDto(List<EventModel> events) {
-        List<EventDto> res = new ArrayList<>();
+    public static List<EventShortDto> mapToShortDto(List<EventModel> events) {
+        List<EventShortDto> res = new ArrayList<>();
         for (EventModel e : events) {
-            res.add(convToDto(e));
+            res.add(convToShortDto(e));
         }
         return res;
     }
@@ -52,16 +52,16 @@ public class EventConverter {
         dtoFull.setTitle(model.getTitle());
         dtoFull.setDescription(model.getDescription());
         dtoFull.setAnnotation(model.getAnnotation());
-        dtoFull.setCategory(model.getCategory());
-        dtoFull.setInitiator(model.getInitiator());
-        dtoFull.setLocation(model.getLocation());
+        dtoFull.setLocation(new LocationDto(model.getLocation().getLat(), model.getLocation().getLon()));
         dtoFull.setEventDate(model.getEventDate());
-        dtoFull.setCreatedOn(model.getCreatedOn());
-        dtoFull.setPublishedOn(model.getPublishedOn());
         dtoFull.setParticipantLimit(model.getParticipantLimit());
-        dtoFull.setConfirmedRequests(model.countConfirmedRequests());
         dtoFull.setRequestModeration(model.getRequestModeration());
         dtoFull.setPaid(model.getPaid());
+        dtoFull.setCategory(CategoryConverter.convToDto(model.getCategory()));
+        dtoFull.setConfirmedRequests(model.countConfirmedRequests());
+        dtoFull.setCreatedOn(model.getCreatedOn());
+        dtoFull.setInitiator(UserConverter.convToDto(model.getInitiator()));
+        dtoFull.setPublishedOn(model.getPublishedOn());
         dtoFull.setState(model.getState());
         return dtoFull;
     }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.model.LocationModel;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -27,7 +26,7 @@ public class EventDto {
     @NotNull
     private Long category;
     @NotNull
-    private LocationModel location;
+    private LocationDto location;
     @NotNull
     @Future
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
