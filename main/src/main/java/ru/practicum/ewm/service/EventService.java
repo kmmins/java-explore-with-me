@@ -123,13 +123,23 @@ public class EventService {
             eventToUpd.setAnnotation(eventDto.getAnnotation());
         }
         if (eventDto.getCategory() != null) {
-            eventToUpd.setCategory(eventDto.getCategory());
+            var category = CategoryConverter.convToModel(categoryService.getCategoryById(eventDto.getCategory()));
+            eventToUpd.setCategory(category);
         }
         if (eventDto.getDescription() != null) {
             eventToUpd.setDescription(eventDto.getDescription());
         }
         if (eventDto.getLocation() != null) {
-            eventToUpd.setLocation(eventDto.getLocation());
+            var loc = locationRepository.findByLatAndLon(eventDto.getLocation().getLat(), eventDto.getLocation().getLon());
+            if (loc.size() == 0) {
+                LocationModel lc = new LocationModel();
+                lc.setLat(eventDto.getLocation().getLat());
+                lc.setLon(eventDto.getLocation().getLon());
+                var after = locationRepository.save(lc);
+                eventToUpd.setLocation(after);
+            } else {
+                eventToUpd.setLocation(loc.get(0));
+            }
         }
         if (eventDto.getPaid() != null) {
             eventToUpd.setPaid(eventDto.getPaid());
@@ -282,13 +292,23 @@ public class EventService {
             eventToUpdAdmin.setAnnotation(eventDto.getAnnotation());
         }
         if (eventDto.getCategory() != null) {
-            eventToUpdAdmin.setCategory(eventDto.getCategory());
+            var category = CategoryConverter.convToModel(categoryService.getCategoryById(eventDto.getCategory()));
+            eventToUpdAdmin.setCategory(category);
         }
         if (eventDto.getDescription() != null) {
             eventToUpdAdmin.setDescription(eventDto.getDescription());
         }
         if (eventDto.getLocation() != null) {
-            eventToUpdAdmin.setLocation(eventDto.getLocation());
+            var loc = locationRepository.findByLatAndLon(eventDto.getLocation().getLat(), eventDto.getLocation().getLon());
+            if (loc.size() == 0) {
+                LocationModel lc = new LocationModel();
+                lc.setLat(eventDto.getLocation().getLat());
+                lc.setLon(eventDto.getLocation().getLon());
+                var after = locationRepository.save(lc);
+                eventToUpdAdmin.setLocation(after);
+            } else {
+                eventToUpdAdmin.setLocation(loc.get(0));
+            }
         }
         if (eventDto.getPaid() != null) {
             eventToUpdAdmin.setPaid(eventDto.getPaid());
@@ -430,7 +450,7 @@ public class EventService {
                 long id = events.get(i).getId();
                 uris[i] = "/events/{" + id + "}";
             }
-            LocalDateTime start = LocalDateTime.ofEpochSecond(0, 0,  ZoneOffset.UTC);
+            LocalDateTime start = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
             LocalDateTime dateTime = LocalDateTime.now();
             List<StatsDto> stats = Arrays.asList(new StatsDto[events.size()]);
             try {

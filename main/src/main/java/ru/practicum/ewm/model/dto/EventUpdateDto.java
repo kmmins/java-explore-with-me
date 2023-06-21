@@ -21,11 +21,11 @@ public class EventUpdateDto {
     private String description;
     @Size(min = 20, max = 2000)
     private String annotation;
-    private CategoryModel category;
+    private Long category;
     @Future
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    private LocationModel location;
+    private LocationDto location;
     private Integer participantLimit;
     private Boolean requestModeration;
     private Boolean paid;
