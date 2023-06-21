@@ -2,6 +2,7 @@ package ru.practicum.ewm.service;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class EventService {
 
@@ -109,10 +111,10 @@ public class EventService {
         }
         var dateTimeNow = LocalDateTime.now();
         if (eventDto.getEventDate() != null) {
-            Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
-            if (eventDto.getEventDate().isBefore(dateTimeNow) || duration.toSeconds() <= 7200) {
+            if (eventDto.getEventDate().isBefore(dateTimeNow) || Duration.between(dateTimeNow, eventDto.getEventDate()).toSeconds() <= 7200) {
                 throw new MainParamConflictException("Event date must be not earlier than two hours later");
             }
+            eventToUpd.setEventDate(eventDto.getEventDate());
         }
         if (eventDto.getAnnotation() != null) {
             eventToUpd.setAnnotation(eventDto.getAnnotation());
@@ -122,9 +124,6 @@ public class EventService {
         }
         if (eventDto.getDescription() != null) {
             eventToUpd.setDescription(eventDto.getDescription());
-        }
-        if (eventDto.getEventDate() != null) {
-            eventToUpd.setEventDate(eventDto.getEventDate());
         }
         if (eventDto.getLocation() != null) {
             eventToUpd.setLocation(eventDto.getLocation());
@@ -142,11 +141,18 @@ public class EventService {
             eventToUpd.setTitle(eventDto.getTitle());
         }
         if (eventDto.getStateAction() != null) {
-            if (eventToUpd.getState().equals(EventState.CANCELED) && eventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
+            if (eventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
+                if (!eventToUpd.getState().equals(EventState.CANCELED)) {
+                    throw new MainParamConflictException("Cannot send to review if state is not canceled");
+                }
                 eventToUpd.setState(EventState.PENDING);
-            }
-            if (eventToUpd.getState().equals(EventState.PENDING) && eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
+            } else if (eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
+                if (!eventToUpd.getState().equals(EventState.PENDING)) {
+                    throw new MainParamConflictException("Cannot cancel event if it is not state pending");
+                }
                 eventToUpd.setState(EventState.CANCELED);
+            } else {
+                throw new MainParamConflictException("Incorrect state action");
             }
         }
         var after = eventRepository.save(eventToUpd);
@@ -264,10 +270,10 @@ public class EventService {
         var eventToUpdAdmin = check.get();
         var dateTimeNow = LocalDateTime.now();
         if (eventDto.getEventDate() != null) {
-            Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
-            if (eventDto.getEventDate().isBefore(dateTimeNow) || duration.toSeconds() <= 7200) {
+            if (eventDto.getEventDate().isBefore(dateTimeNow) || Duration.between(dateTimeNow, eventDto.getEventDate()).toSeconds() <= 7200) {
                 throw new MainParamConflictException("Event date must be not earlier than two hours later");
             }
+            eventDto.setEventDate(eventDto.getEventDate());
         }
         if (eventDto.getAnnotation() != null) {
             eventToUpdAdmin.setAnnotation(eventDto.getAnnotation());
@@ -277,9 +283,6 @@ public class EventService {
         }
         if (eventDto.getDescription() != null) {
             eventToUpdAdmin.setDescription(eventDto.getDescription());
-        }
-        if (eventDto.getEventDate() != null) {
-            eventDto.setEventDate(eventDto.getEventDate());
         }
         if (eventDto.getLocation() != null) {
             eventToUpdAdmin.setLocation(eventDto.getLocation());
@@ -301,21 +304,19 @@ public class EventService {
                 if (!eventToUpdAdmin.getState().equals(EventState.PENDING)) {
                     throw new MainParamConflictException("Cannot publish event because it's not in the pending state");
                 }
-                if (eventDto.getEventDate() != null) {
-                    var datePublish = LocalDateTime.now();
-                    Duration duration = Duration.between(datePublish, eventDto.getEventDate());
-                    if (eventDto.getEventDate().isBefore(datePublish) || duration.toSeconds() <= 3600) {
-                        throw new MainParamConflictException("Event date must be not earlier than one hour before published");
-                    }
-                    eventToUpdAdmin.setState(EventState.PUBLISHED);
-                    eventToUpdAdmin.setPublishedOn(datePublish);
+                var datePublish = LocalDateTime.now();
+                if (eventToUpdAdmin.getEventDate().isBefore(datePublish) || Duration.between(datePublish, eventToUpdAdmin.getEventDate()).toSeconds() <= 3600) {
+                    throw new MainParamConflictException("Event date must be not earlier than one hour before published");
                 }
-            }
-            if (eventDto.getStateAction().equals(EventStateAction.REJECT_EVENT)) {
-                if (eventToUpdAdmin.getState().equals(EventState.PUBLISHED)) {
+                eventToUpdAdmin.setState(EventState.PUBLISHED);
+                eventToUpdAdmin.setPublishedOn(datePublish);
+            } else if (eventDto.getStateAction().equals(EventStateAction.REJECT_EVENT)) {
+                if (!eventToUpdAdmin.getState().equals(EventState.PENDING)) {
                     throw new MainParamConflictException("Cannot reject event because it's in the published state");
                 }
                 eventToUpdAdmin.setState(EventState.CANCELED);
+            } else {
+                throw new MainParamConflictException("Incorrect state action");
             }
         }
         var after = eventRepository.save(eventToUpdAdmin);
@@ -341,7 +342,10 @@ public class EventService {
         }
         QEventModel qModel = QEventModel.eventModel;
         BooleanExpression predicatePublic = qModel.eventDate.after(rangeStart).and(qModel.state.eq(EventState.PUBLISHED));
-        if (rangeEnd != null && rangeEnd.isAfter(dateTimeNow)) {
+        if (rangeEnd != null) {
+            if (rangeStart.isAfter(rangeEnd)) {
+                throw new MainParameterException("Incorrect time");
+            }
             predicatePublic = predicatePublic.and(qModel.eventDate.before(rangeEnd));
         }
         if (text != null) {
@@ -426,8 +430,8 @@ public class EventService {
             List<StatsDto> stats = Arrays.asList(new StatsDto[events.size()]);
             try {
                 stats = statsClient.getStats(start, dateTime, uris, true);
-            } catch (HttpClientErrorException e) {
-                System.out.println(e.getMessage());
+            } catch (HttpClientErrorException.NotFound e) {
+                log.info("Stats service: {}", e.getMessage());
             }
             for (int i = 0; i < uris.length; i++) {
                 if (stats.get(i) != null) {
