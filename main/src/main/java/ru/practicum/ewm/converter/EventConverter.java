@@ -33,6 +33,7 @@ public class EventConverter {
         dto.setAnnotation(model.getAnnotation());
         dto.setCategory(CategoryConverter.convToDto(model.getCategory()));
         dto.setInitiator(UserConverter.convToDto(model.getInitiator()));
+        dto.setConfirmedRequests(model.countConfirmedRequests());
         dto.setEventDate(model.getEventDate());
         dto.setPaid(model.getPaid());
         return dto;

@@ -41,10 +41,9 @@ public class StatsController {
                                    @RequestParam String end,
                                    @RequestParam(required = false) String[] uris,
                                    @RequestParam(required = false, defaultValue = "false") String unique) {
-        var result = statsService.getStats(parseTime(start), parseTime(end), uris, parseBool(unique));
         log.info("[GET /stats?start={start}&end={end}&uris={uris}&unique={unique}]. Get stats from date: {} to date: {} for uris: {} (unique: {})",
                 start, end, uris, unique);
-        return result;
+        return statsService.getStats(parseTime(start), parseTime(end), uris, parseBool(unique));
     }
 
     private LocalDateTime parseTime(String dateTime) {

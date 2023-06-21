@@ -18,7 +18,6 @@ public class EventDtoFull extends EventShortDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private Integer participantLimit;
-    private Long confirmedRequests;
     private Boolean requestModeration;
     private EventState state;
 }

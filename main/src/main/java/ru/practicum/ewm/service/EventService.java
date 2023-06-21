@@ -433,7 +433,7 @@ public class EventService {
 
     private Long getViews(EventModel event) {
         long id = event.getId();
-        String[] uris = {"/events/{" + id + "}"};
+        String[] uris = {"/events/" + id};
         List<StatsDto> stats;
         try {
             stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
@@ -448,20 +448,18 @@ public class EventService {
             String[] uris = new String[events.size()];
             for (int i = 0; i < uris.length; i++) {
                 long id = events.get(i).getId();
-                uris[i] = "/events/{" + id + "}";
+                uris[i] = "/events/" + id;
             }
             LocalDateTime start = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-            LocalDateTime dateTime = LocalDateTime.now();
-            List<StatsDto> stats = Arrays.asList(new StatsDto[events.size()]);
+            LocalDateTime end = LocalDateTime.now();
             try {
-                stats = statsClient.getStats(start, dateTime, uris, true);
+                List<StatsDto> stats = statsClient.getStats(start, end, uris, true);
+                for (int i = 0; i < uris.length; i++) {
+                    events.get(i).setViews(stats.get(i).getHits());
+                }
             } catch (HttpClientErrorException.NotFound e) {
                 log.info("Stats service: {}", e.getMessage());
-            }
-            for (int i = 0; i < uris.length; i++) {
-                if (stats.get(i) != null) {
-                    events.get(i).setViews(stats.get(i).getHits());
-                } else {
+                for (int i = 0; i < uris.length; i++) {
                     events.get(i).setViews(0L);
                 }
             }
