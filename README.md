@@ -69,15 +69,15 @@ class users {
    bigint id
 }
 
-comments  -->  events : event_id:id
-comments  -->  users : author_id:id
-events  -->  categories : category_id:id
-events  -->  locations : location_id:id
-events  -->  users : initiator_id:id
-node7  -->  compilations : compilation_id:id
-node7  -->  events : event_id:id
-requests  -->  events : event_id:id
-requests  -->  users : requester_id:id
+comments  -->  events : event_id
+comments  -->  users : author_id
+events  -->  categories : category_id
+events  -->  locations : location_id
+events  -->  users : initiator_id
+node7  -->  compilations : compilation_id
+node7  -->  events : event_id
+requests  -->  events : event_id
+requests  -->  users : requester_id
 ```
 
 Statistics service database schema:
