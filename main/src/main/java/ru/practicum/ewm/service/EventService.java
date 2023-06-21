@@ -411,7 +411,12 @@ public class EventService {
     private Long getViews(EventModel event) {
         long id = event.getId();
         String[] uris = {"/events/{" + id + "}"};
-        List<StatsDto> stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
+        List<StatsDto> stats;
+        try {
+            stats = statsClient.getStats(event.getCreatedOn(), LocalDateTime.now(), uris, true);
+        } catch (HttpClientErrorException.NotFound e) {
+            return 0L;
+        }
         return stats.get(0).getHits();
     }
 

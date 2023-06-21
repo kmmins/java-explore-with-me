@@ -41,7 +41,7 @@ public class PrivateRequestController {
         return notHisRequests;
     }
 
-    @PostMapping("{requestId}/cancel")
+    @PatchMapping("{requestId}/cancel")
     public RequestDto cancelRequest(@PathVariable Long userId,
                                     @PathVariable Long requestId) {
         var result = requestService.cancelRequest(userId, requestId);

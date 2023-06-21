@@ -46,7 +46,7 @@ public class PrivateEventController {
 
     @GetMapping("/{eventId}")
     public EventDto getEventByIdPrivate(@PathVariable Long userId, @PathVariable Long eventId) {
-        var eventById = eventService.getEventByIdPrivate(eventId, userId);
+        var eventById = eventService.getEventByIdPrivate(userId, eventId);
         log.info("[GET /users/{userId}/events/{eventId}] (Private). Get event (id): {} from user (id): {}", eventId, userId);
         return eventById;
     }
