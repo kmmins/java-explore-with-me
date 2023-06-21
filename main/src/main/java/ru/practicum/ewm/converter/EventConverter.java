@@ -47,24 +47,23 @@ public class EventConverter {
     }
 
     public static EventDtoFull convToDtoFull(EventModel model) {
-        return new EventDtoFull(
-                model.getId(),
-                model.getTitle(),
-                model.getDescription(),
-                model.getAnnotation(),
-                model.getCategory(),
-                model.getInitiator(),
-                model.getLocation(),
-                model.getEventDate(),
-                model.getCreatedOn(),
-                model.getPublishedOn(),
-                model.getParticipantLimit(),
-                model.countConfirmedRequests(),
-                model.getRequestModeration(),
-                model.getPaid(),
-                model.getState(),
-                null
-        );
+        EventDtoFull dtoFull = new EventDtoFull();
+        dtoFull.setId(model.getId());
+        dtoFull.setTitle(model.getTitle());
+        dtoFull.setDescription(model.getDescription());
+        dtoFull.setAnnotation(model.getAnnotation());
+        dtoFull.setCategory(model.getCategory());
+        dtoFull.setInitiator(model.getInitiator());
+        dtoFull.setLocation(model.getLocation());
+        dtoFull.setEventDate(model.getEventDate());
+        dtoFull.setCreatedOn(model.getCreatedOn());
+        dtoFull.setPublishedOn(model.getPublishedOn());
+        dtoFull.setParticipantLimit(model.getParticipantLimit());
+        dtoFull.setConfirmedRequests(model.countConfirmedRequests());
+        dtoFull.setRequestModeration(model.getRequestModeration());
+        dtoFull.setPaid(model.getPaid());
+        dtoFull.setState(model.getState());
+        return dtoFull;
     }
 
     public static List<EventDtoFull> mapToDtoFull(List<EventModel> events) {

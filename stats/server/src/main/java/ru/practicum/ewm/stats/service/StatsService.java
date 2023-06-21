@@ -3,7 +3,7 @@ package ru.practicum.ewm.stats.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.stats.collective.*;
-import ru.practicum.ewm.stats.exception.NotFoundException;
+import ru.practicum.ewm.stats.exception.StatsNotFoundException;
 import ru.practicum.ewm.stats.model.ConverterModelDto;
 import ru.practicum.ewm.stats.model.HitModel;
 import ru.practicum.ewm.stats.model.StatsModel;
@@ -33,26 +33,26 @@ public class StatsService {
             if (uris == null) {
                 List<Object[]> rows = statsRepository.findAllUniqueIp(start, end);
                 if (rows.size() == 0) {
-                    throw new NotFoundException("No stats found for the specified parameters");
+                    throw new StatsNotFoundException("No stats found for the specified parameters");
                 }
                 return getListModelFromRows(rows);
             }
             List<Object[]> rows = statsRepository.findStatsByUrisUniqueIp(start, end, uris);
             if (rows.size() == 0) {
-                throw new NotFoundException("No stats found for the specified parameters");
+                throw new StatsNotFoundException("No stats found for the specified parameters");
             }
             return getListModelFromRows(rows);
         } else {
             if (uris == null) {
                 List<Object[]> rows = statsRepository.findAll(start, end);
                 if (rows.size() == 0) {
-                    throw new NotFoundException("No stats found for the specified parameters");
+                    throw new StatsNotFoundException("No stats found for the specified parameters");
                 }
                 return getListModelFromRows(rows);
             }
             List<Object[]> rows = statsRepository.findStatsByUris(start, end, uris);
             if (rows.size() == 0) {
-                throw new NotFoundException("No stats found for the specified parameters");
+                throw new StatsNotFoundException("No stats found for the specified parameters");
             }
             return getListModelFromRows(rows);
         }

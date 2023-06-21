@@ -36,9 +36,9 @@ public class StatsClient {
     }
 
 
-    public ResponseEntity<Void> saveStats(String app, String uri, String ip, LocalDateTime dateTime) {
+    public void saveStats(String app, String uri, String ip, LocalDateTime dateTime) {
         HitDto body = new HitDto(app, uri, ip, dateTime);
-        return rest.postForEntity("/hit", body, Void.class);
+        rest.postForEntity("/hit", body, Void.class);
     }
 
     public List<StatsDto> getStats(LocalDateTime start, LocalDateTime end, @Nullable String[] uris, @Nullable boolean uniq) {
@@ -47,11 +47,13 @@ public class StatsClient {
             Map<String, Object> parametersUris = Map.of(
                     "start", encodeDateTime(start),
                     "end", encodeDateTime(end),
-                    "uris", uris, "unique", uniq
+                    "uris", uris,
+                    "unique", uniq
             );
             ResponseEntity<StatsDto[]> response = rest.exchange(
                     "/stats?start={start}&end={end}&uris={uris}&unique={unique}",
-                    HttpMethod.GET, requestEntity,
+                    HttpMethod.GET,
+                    requestEntity,
                     StatsDto[].class,
                     parametersUris
             );

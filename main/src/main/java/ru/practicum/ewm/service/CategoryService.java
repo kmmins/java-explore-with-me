@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.converter.CategoryConverter;
 import ru.practicum.ewm.model.dto.CategoryDto;
-import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.exception.MainNotFoundException;
 import ru.practicum.ewm.model.CategoryModel;
 import ru.practicum.ewm.repository.CategoryRepository;
 import ru.practicum.ewm.util.PageHelper;
@@ -32,7 +32,7 @@ public class CategoryService {
     public CategoryDto updateCategory(CategoryDto categoryDto, Long catId) {
         var check = categoryRepository.findById(catId);
         if (check.isEmpty()) {
-            throw new NotFoundException("Category with id=" + catId + " was not found");
+            throw new MainNotFoundException("Category with id=" + catId + " was not found");
         }
         CategoryModel updatedCat = check.get();
         updatedCat.setName(categoryDto.getName());
@@ -56,7 +56,7 @@ public class CategoryService {
     public CategoryDto getCategoryById(Long catId) {
         var result = categoryRepository.findById(catId);
         if (result.isEmpty()) {
-            throw new NotFoundException("Category with id=" + catId + " was not found");
+            throw new MainNotFoundException("Category with id=" + catId + " was not found");
         }
 
         return CategoryConverter.convToDto(result.get());

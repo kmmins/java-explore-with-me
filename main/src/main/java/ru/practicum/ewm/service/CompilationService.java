@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.converter.CompilationConverter;
 import ru.practicum.ewm.model.dto.CompilationDto;
-import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.exception.MainNotFoundException;
 import ru.practicum.ewm.model.CompilationModel;
 import ru.practicum.ewm.model.dto.CompilationUpdateDto;
 import ru.practicum.ewm.repository.CompilationRepository;
@@ -33,7 +33,7 @@ public class CompilationService {
     public CompilationDto updateCompilation(Long compId, CompilationUpdateDto compilationDto) {
         var check = compilationRepository.findById(compId);
         if (check.isEmpty()) {
-            throw new NotFoundException("Compilation with id=" + compId + " was not found");
+            throw new MainNotFoundException("Compilation with id=" + compId + " was not found");
         }
         CompilationModel updatedComp = check.get();
         if (compilationDto.getTitle() != null) {
@@ -78,7 +78,7 @@ public class CompilationService {
     public CompilationDto getCompilationsById(Long compId) {
         var result = compilationRepository.findById(compId);
         if (result.isEmpty()) {
-            throw new NotFoundException("Compilation with id=" + compId + " was not found");
+            throw new MainNotFoundException("Compilation with id=" + compId + " was not found");
         }
 
         return CompilationConverter.convToDto(result.get());
