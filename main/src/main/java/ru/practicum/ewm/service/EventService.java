@@ -454,8 +454,11 @@ public class EventService {
             LocalDateTime end = LocalDateTime.now();
             try {
                 List<StatsDto> stats = statsClient.getStats(start, end, uris, true);
+                var mapUriToHits = stats.stream()
+                        .filter(statsDto -> statsDto.getApp().equals("ewm-main-service"))
+                        .collect(Collectors.toMap(StatsDto::getUri, StatsDto::getHits));
                 for (int i = 0; i < uris.length; i++) {
-                    events.get(i).setViews(stats.get(i).getHits());
+                    events.get(i).setViews(mapUriToHits.getOrDefault(uris[i], 0L));
                 }
             } catch (HttpClientErrorException.NotFound e) {
                 log.info("Stats service: {}", e.getMessage());
