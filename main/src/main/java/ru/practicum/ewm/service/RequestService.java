@@ -54,21 +54,17 @@ public class RequestService {
             throw new MainParamConflictException("Unable to participate in an unpublished event");
         }
         var created = RequestConverter.convToModel(userId, eventId);
+        created.setCreated(LocalDateTime.now());
         if (event.getParticipantLimit() > 0) {
             var countId = event.countConfirmedRequests();
-            if (event.getParticipantLimit() >= countId) {
+            if (event.getParticipantLimit() <= countId) {
                 throw new MainParamConflictException("Request limit with approved status exceeded");
             }
-            created.setCreated(LocalDateTime.now());
-            if (event.getRequestModeration().equals(false)) {
-                created.setStatus(RequestStatus.CONFIRMED);
-            } else {
-                created.setStatus(RequestStatus.PENDING);
-            }
         }
-        if (event.getParticipantLimit() == 0) {
-            created.setCreated(LocalDateTime.now());
+        if (event.getRequestModeration().equals(false)) {
             created.setStatus(RequestStatus.CONFIRMED);
+        } else {
+            created.setStatus(RequestStatus.PENDING);
         }
         var after = requestRepository.save(created);
         return RequestConverter.convToDto(after);
