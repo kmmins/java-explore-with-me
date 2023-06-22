@@ -62,7 +62,7 @@ public class RequestService {
         var created = RequestConverter.convToModel(userId, eventId);
         created.setCreated(LocalDateTime.now());
         if (event.getRequestModeration().equals(false) || event.getParticipantLimit() == 0) {
-            created.setStatus(RequestStatus.APPROVED);
+            created.setStatus(RequestStatus.CONFIRMED);
         } else {
             created.setStatus(RequestStatus.PENDING);
         }

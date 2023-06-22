@@ -206,7 +206,7 @@ public class EventService {
             for (RequestModel r : selectedRequests) {
                 if (thisEvent.getParticipantLimit() > confReq) {
                     if (requestDto.getStatus().equals(RequestUpdateStatus.CONFIRMED)) {
-                        r.setStatus(RequestStatus.APPROVED);
+                        r.setStatus(RequestStatus.CONFIRMED);
                         confReq++;
                         if (thisEvent.getParticipantLimit() == confReq) {
                             for (RequestModel rm : thisEvent.getAllRequests()) {
