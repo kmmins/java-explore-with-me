@@ -2,6 +2,6 @@ package ru.practicum.ewm.model;
 
 public enum RequestUpdateStatus {
 
-    APPROVED,
+    CONFIRMED,
     REJECTED
 }

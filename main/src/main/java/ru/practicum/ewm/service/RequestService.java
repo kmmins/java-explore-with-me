@@ -53,16 +53,16 @@ public class RequestService {
         if (event.getState() != EventState.PUBLISHED) {
             throw new MainParamConflictException("Unable to participate in an unpublished event");
         }
-        var created = RequestConverter.convToModel(userId, eventId);
-        created.setCreated(LocalDateTime.now());
         if (event.getParticipantLimit() > 0) {
             var countId = event.countConfirmedRequests();
             if (event.getParticipantLimit() <= countId) {
                 throw new MainParamConflictException("Request limit with approved status exceeded");
             }
         }
-        if (event.getRequestModeration().equals(false)) {
-            created.setStatus(RequestStatus.CONFIRMED);
+        var created = RequestConverter.convToModel(userId, eventId);
+        created.setCreated(LocalDateTime.now());
+        if (event.getRequestModeration().equals(false) || event.getParticipantLimit() == 0) {
+            created.setStatus(RequestStatus.APPROVED);
         } else {
             created.setStatus(RequestStatus.PENDING);
         }

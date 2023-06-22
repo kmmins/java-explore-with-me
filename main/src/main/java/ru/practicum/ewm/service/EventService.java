@@ -205,8 +205,8 @@ public class EventService {
             long confReq = thisEvent.countConfirmedRequests();
             for (RequestModel r : selectedRequests) {
                 if (thisEvent.getParticipantLimit() > confReq) {
-                    if (requestDto.getStatus().equals(RequestUpdateStatus.APPROVED)) {
-                        r.setStatus(RequestStatus.CONFIRMED);
+                    if (requestDto.getStatus().equals(RequestUpdateStatus.CONFIRMED)) {
+                        r.setStatus(RequestStatus.APPROVED);
                         confReq++;
                         if (thisEvent.getParticipantLimit() == confReq) {
                             for (RequestModel rm : thisEvent.getAllRequests()) {
@@ -225,7 +225,7 @@ public class EventService {
                         afterUpdateStatus.getRejectedRequests().add(RequestConverter.convToDto(rSaved));
                     }
                 } else {
-                    if (requestDto.getStatus().equals(RequestUpdateStatus.APPROVED)) {
+                    if (requestDto.getStatus().equals(RequestUpdateStatus.CONFIRMED)) {
                         throw new MainParamConflictException("The participant limit has been reached");
                     }
                 }
