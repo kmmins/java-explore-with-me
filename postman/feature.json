@@ -484,14 +484,14 @@
 			"response": []
 		},
 		{
-			"name": "add Comment 1 from Initiator to Event_106_ok",
+			"name": "add Comment 1 from Initiator to Event_106_fail",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code 200,201\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
+							"pm.test(\"Status code 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(400);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -552,7 +552,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/events/0",
+					"raw": "http://localhost:8080/events/135",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -560,7 +560,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"0"
+						"135"
 					]
 				}
 			},
@@ -568,6 +568,19 @@
 		},
 		{
 			"name": "update Comment 0 by Author_ok",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code 200,201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "PATCH",
 				"header": [],
@@ -581,7 +594,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/0/events/0/comment/0",
+					"raw": "http://localhost:8080/users/135/events/105/comment/0",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -589,9 +602,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"0",
+						"135",
 						"events",
-						"0",
+						"105",
 						"comment",
 						"0"
 					]
@@ -623,7 +636,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/events/0",
+					"raw": "http://localhost:8080/events/135",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -631,7 +644,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"0"
+						"135"
 					]
 				}
 			},
@@ -710,7 +723,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/0/events/0/comment/1",
+					"raw": "http://localhost:8080/users/135/events/105/comment/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -718,9 +731,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"0",
+						"135",
 						"events",
-						"0",
+						"105",
 						"comment",
 						"1"
 					]
@@ -747,7 +760,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/users/2/events/0/comment/0",
+					"raw": "http://localhost:8080/users/137/events/105/comment/0",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -755,9 +768,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"2",
+						"137",
 						"events",
-						"0",
+						"105",
 						"comment",
 						"0"
 					]
@@ -784,7 +797,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/users/0/events/0/comment/1",
+					"raw": "http://localhost:8080/users/135/events/105/comment/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -792,9 +805,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"0",
+						"135",
 						"events",
-						"0",
+						"105",
 						"comment",
 						"1"
 					]
@@ -826,7 +839,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/events/0",
+					"raw": "http://localhost:8080/events/135",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -834,7 +847,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"0"
+						"135"
 					]
 				}
 			},
