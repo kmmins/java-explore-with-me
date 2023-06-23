@@ -50,6 +50,9 @@ public class EventModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private EventState state;
+    @OneToMany
+    @JoinColumn(name = "event_id")
+    private List<CommentModel> commentModelList;
 
     public long countConfirmedRequests() {
         long result = 0L;

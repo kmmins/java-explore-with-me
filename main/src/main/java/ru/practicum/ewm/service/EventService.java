@@ -15,10 +15,7 @@ import ru.practicum.ewm.exception.MainParamConflictException;
 import ru.practicum.ewm.exception.MainParameterException;
 import ru.practicum.ewm.model.*;
 import ru.practicum.ewm.model.dto.*;
-import ru.practicum.ewm.repository.EventRepository;
-import ru.practicum.ewm.repository.LocationRepository;
-import ru.practicum.ewm.repository.RequestRepository;
-import ru.practicum.ewm.repository.UserRepository;
+import ru.practicum.ewm.repository.*;
 import ru.practicum.ewm.stats.client.StatsClient;
 import ru.practicum.ewm.stats.collective.StatsDto;
 import ru.practicum.ewm.util.PageHelper;
@@ -430,6 +427,7 @@ public class EventService {
         result.setViews(viewsFromStats);
         return result;
     }
+
 
     private Long getViews(EventModel event) {
         long id = event.getId();
