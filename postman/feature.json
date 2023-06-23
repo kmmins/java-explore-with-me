@@ -175,7 +175,7 @@
 			"response": []
 		},
 		{
-			"name": "private add Events 105_ok",
+			"name": "private add Event 105_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -218,7 +218,7 @@
 			"response": []
 		},
 		{
-			"name": "private add Events 106_ok",
+			"name": "private add Event 106_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -484,7 +484,7 @@
 			"response": []
 		},
 		{
-			"name": "add Comment 1 from Initiator to Event_106_fail",
+			"name": "add Comment 1 from Initiator to Event 106_fail",
 			"event": [
 				{
 					"listen": "test",
@@ -529,7 +529,7 @@
 			"response": []
 		},
 		{
-			"name": "public get Event 135_ok",
+			"name": "public get Event 105_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -548,11 +548,18 @@
 					}
 				}
 			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "file",
+					"file": {}
+				},
 				"url": {
-					"raw": "http://localhost:8080/events/135",
+					"raw": "http://localhost:8080/events/105",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -560,7 +567,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"135"
+						"105"
 					]
 				}
 			},
@@ -613,7 +620,7 @@
 			"response": []
 		},
 		{
-			"name": "public get Events 135 after update_ok",
+			"name": "public get Event 105 after update_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -636,7 +643,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/events/135",
+					"raw": "http://localhost:8080/events/105",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -644,7 +651,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"135"
+						"105"
 					]
 				}
 			},
@@ -678,7 +685,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/1/events/0/comment",
+					"raw": "http://localhost:8080/users/136/events/105/comment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -686,9 +693,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"1",
+						"136",
 						"events",
-						"0",
+						"105",
 						"comment"
 					]
 				}
