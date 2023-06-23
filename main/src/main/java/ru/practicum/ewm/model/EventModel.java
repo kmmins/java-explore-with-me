@@ -50,7 +50,7 @@ public class EventModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private EventState state;
-    @OneToMany
+    @OneToMany(mappedBy = "events", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "event_id")
     private List<CommentModel> commentModelList;
 

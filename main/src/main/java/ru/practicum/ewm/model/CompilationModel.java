@@ -19,7 +19,7 @@ public class CompilationModel {
     private String title;
     @Column(name = "pinned")
     private Boolean pinned;
-    @OneToMany
+    @OneToMany(mappedBy = "events_compilations", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(
             name = "events_compilations",
             joinColumns = @JoinColumn(name = "compilation_id"),
