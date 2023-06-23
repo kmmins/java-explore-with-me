@@ -4,11 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.stats.exception.ParameterException;
+import ru.practicum.ewm.stats.exception.StatsParameterException;
 import ru.practicum.ewm.stats.collective.HitDto;
 import ru.practicum.ewm.stats.collective.StatsDto;
 import ru.practicum.ewm.stats.service.StatsService;
 
+import java.net.URLDecoder;
+
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -38,14 +41,14 @@ public class StatsController {
                                    @RequestParam String end,
                                    @RequestParam(required = false) String[] uris,
                                    @RequestParam(required = false, defaultValue = "false") String unique) {
-        var result = statsService.getStats(parseTime(start), parseTime(end), uris, parseBool(unique));
         log.info("[GET /stats?start={start}&end={end}&uris={uris}&unique={unique}]. Get stats from date: {} to date: {} for uris: {} (unique: {})",
                 start, end, uris, unique);
-        return result;
+        return statsService.getStats(parseTime(start), parseTime(end), uris, parseBool(unique));
     }
 
     private LocalDateTime parseTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, formatter);
+        var decode = URLDecoder.decode(dateTime, StandardCharsets.UTF_8);
+        return LocalDateTime.parse(decode, formatter);
     }
 
     private boolean parseBool(String unique) {
@@ -53,7 +56,7 @@ public class StatsController {
         try {
             bool = Boolean.parseBoolean(unique);
         } catch (IllegalArgumentException e) {
-            throw new ParameterException("Unknown param unique: " + unique);
+            throw new StatsParameterException("Unknown param unique: " + unique);
         }
         return bool;
     }
