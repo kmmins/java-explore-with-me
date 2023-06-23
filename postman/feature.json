@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "admin add User 0",
+			"name": "admin add User 135_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -49,7 +49,7 @@
 			"response": []
 		},
 		{
-			"name": "admin add User 1",
+			"name": "admin add User 136_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -91,7 +91,7 @@
 			"response": []
 		},
 		{
-			"name": "admin add User 2",
+			"name": "admin add User 137_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -133,7 +133,7 @@
 			"response": []
 		},
 		{
-			"name": "admin add Category 0",
+			"name": "admin add Category 120_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -175,7 +175,7 @@
 			"response": []
 		},
 		{
-			"name": "private add Events 0",
+			"name": "private add Events 105_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -194,7 +194,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"annotation\": \"EventAlex322 annotation.\",\n  \"category\": 0,\n  \"description\": \"EventAlex322description description description.\",\n  \"eventDate\": \"2023-08-17 23:05:13\",\n  \"location\": {\n    \"lat\": 34.6762,\n    \"lon\": 135.2070\n  },\n  \"paid\": \"true\",\n  \"participantLimit\": \"5\",\n  \"requestModeration\": \"true\",\n  \"title\": \"EventAlex322 title title title.\"\n}",
+					"raw": "{\n  \"annotation\": \"EventAlex322 annotation.\",\n  \"category\": 120,\n  \"description\": \"EventAlex322description description description.\",\n  \"eventDate\": \"2023-08-17 23:05:13\",\n  \"location\": {\n    \"lat\": 34.6762,\n    \"lon\": 135.2070\n  },\n  \"paid\": \"true\",\n  \"participantLimit\": \"5\",\n  \"requestModeration\": \"true\",\n  \"title\": \"EventAlex322 title title title.\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -202,7 +202,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/0/events",
+					"raw": "http://localhost:8080/users/135/events",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -210,7 +210,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"0",
+						"135",
 						"events"
 					]
 				}
@@ -218,7 +218,7 @@
 			"response": []
 		},
 		{
-			"name": "private add Events 1",
+			"name": "private add Events 106_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -237,7 +237,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"annotation\": \"EventAlex322 annotation next.\",\n  \"category\": 0,\n  \"description\": \"EventAlex322description description description next.\",\n  \"eventDate\": \"2023-08-18 23:05:13\",\n  \"location\": {\n    \"lat\": 33.4523,\n    \"lon\": 136.1101\n  },\n  \"paid\": \"true\",\n  \"participantLimit\": \"5\",\n  \"requestModeration\": \"true\",\n  \"title\": \"EventAlex322 title title title next.\"\n}",
+					"raw": "{\n  \"annotation\": \"BrianBrianBrian annotation next.\",\n  \"category\": 120,\n  \"description\": \"BrianBrianBrian description description next.\",\n  \"eventDate\": \"2023-08-18 23:05:13\",\n  \"location\": {\n    \"lat\": 33.4523,\n    \"lon\": 136.1101\n  },\n  \"paid\": \"true\",\n  \"participantLimit\": \"5\",\n  \"requestModeration\": \"true\",\n  \"title\": \"BrianBrianBrian title title title next.\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -245,7 +245,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/0/events",
+					"raw": "http://localhost:8080/users/136/events",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -253,7 +253,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"0",
+						"136",
 						"events"
 					]
 				}
@@ -261,7 +261,7 @@
 			"response": []
 		},
 		{
-			"name": "admin publish Event 0",
+			"name": "admin publish Event 105_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -288,7 +288,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/admin/events/0",
+					"raw": "http://localhost:8080/admin/events/105",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -297,14 +297,14 @@
 					"path": [
 						"admin",
 						"events",
-						"0"
+						"105"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "add Comment from Initiator to Event 0",
+			"name": "add Comment 0 from Initiator to Event 105_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -331,7 +331,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/0/events/0/comment",
+					"raw": "http://localhost:8080/users/135/events/105/comment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -339,9 +339,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"0",
+						"135",
 						"events",
-						"0",
+						"105",
 						"comment"
 					]
 				}
@@ -349,7 +349,7 @@
 			"response": []
 		},
 		{
-			"name": "add Comment from User99 to Event 0 fail",
+			"name": "add Comment from User995 to Event 105_fail",
 			"event": [
 				{
 					"listen": "test",
@@ -376,7 +376,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/999/events/0/comment",
+					"raw": "http://localhost:8080/users/995/events/105/comment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -384,9 +384,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"999",
+						"995",
 						"events",
-						"0",
+						"105",
 						"comment"
 					]
 				}
@@ -394,7 +394,7 @@
 			"response": []
 		},
 		{
-			"name": "add Comment from User1 to Event 0 not Confirmed (after start Event) fail",
+			"name": "add Comment from User136 to Event 105 (after start Event)_fail",
 			"event": [
 				{
 					"listen": "test",
@@ -421,7 +421,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/1/events/0/comment",
+					"raw": "http://localhost:8080/users/136/events/105/comment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -429,9 +429,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"1",
+						"136",
 						"events",
-						"0",
+						"105",
 						"comment"
 					]
 				}
@@ -439,7 +439,7 @@
 			"response": []
 		},
 		{
-			"name": "add Comment from User1 to Event 100500 fail",
+			"name": "add Comment from User136 to Event 100506_fail",
 			"event": [
 				{
 					"listen": "test",
@@ -466,7 +466,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/1/events/100500/comment",
+					"raw": "http://localhost:8080/users/136/events/100506/comment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -474,9 +474,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"1",
+						"136",
 						"events",
-						"100500",
+						"100506",
 						"comment"
 					]
 				}
@@ -484,14 +484,14 @@
 			"response": []
 		},
 		{
-			"name": "add Comment from Initiator to Event 1 fail",
+			"name": "add Comment 1 from Initiator to Event_106_ok",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code 400\", function () {",
-							"    pm.expect(pm.response.code).to.equal(400);",
+							"pm.test(\"Status code 200,201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -511,7 +511,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/1/events/1/comment",
+					"raw": "http://localhost:8080/users/136/events/106/comment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -519,9 +519,9 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"1",
+						"136",
 						"events",
-						"1",
+						"106",
 						"comment"
 					]
 				}
@@ -529,7 +529,7 @@
 			"response": []
 		},
 		{
-			"name": "public get Event 0",
+			"name": "public get Event 135_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -567,7 +567,7 @@
 			"response": []
 		},
 		{
-			"name": "update Comment by Author",
+			"name": "update Comment 0 by Author_ok",
 			"request": {
 				"method": "PATCH",
 				"header": [],
@@ -600,7 +600,7 @@
 			"response": []
 		},
 		{
-			"name": "public get Events 0",
+			"name": "public get Events 135 after update_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -638,7 +638,7 @@
 			"response": []
 		},
 		{
-			"name": "add Comment from User1 to Event 0",
+			"name": "add Comment 1 from User136 to Event 105_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -683,7 +683,7 @@
 			"response": []
 		},
 		{
-			"name": "update Comment by Initiator fail",
+			"name": "update Comment 1 by Initiator_fail",
 			"event": [
 				{
 					"listen": "test",
@@ -729,7 +729,7 @@
 			"response": []
 		},
 		{
-			"name": "delete Comment 0 by User 2 fail",
+			"name": "delete Comment 0 by User 137_fail",
 			"event": [
 				{
 					"listen": "test",
@@ -766,7 +766,7 @@
 			"response": []
 		},
 		{
-			"name": "delete Comment 1 by Initiator",
+			"name": "delete Comment 1 by Initiator_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -803,7 +803,7 @@
 			"response": []
 		},
 		{
-			"name": "public get Events 0 comment length after delete",
+			"name": "public get Events 135 comments length after delete_ok",
 			"event": [
 				{
 					"listen": "test",
