@@ -29,7 +29,7 @@ public class EventModel {
     @ManyToOne
     @JoinColumn(name = "initiator_id", nullable = false)
     private UserModel initiator;
-    @ManyToOne/*(cascade = CascadeType.ALL)*/
+    @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private LocationModel location;
     @Column(name = "event_date")
@@ -50,7 +50,7 @@ public class EventModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private EventState state;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "event_id")
     private List<CommentModel> commentModelList;
 
