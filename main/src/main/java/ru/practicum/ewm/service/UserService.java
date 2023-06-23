@@ -24,9 +24,9 @@ public class UserService {
     }
 
     public UserDto addUser(UserDto userDto) {
-        var created = UserConverter.convToModel(userDto);
+        var created = UserConverter.convertToModel(userDto);
         var after = userRepository.save(created);
-        return UserConverter.convToDto(after);
+        return UserConverter.convertToDto(after);
     }
 
     public List<UserDto> getUsers(Long[] ids, int from, int size) {

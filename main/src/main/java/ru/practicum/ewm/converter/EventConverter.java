@@ -12,7 +12,7 @@ import java.util.List;
 
 public class EventConverter {
 
-    public static EventModel convToModel(UserModel user, EventDto dto) {
+    public static EventModel convertToModel(UserModel user, EventDto dto) {
         EventModel model = new EventModel();
         model.setTitle(dto.getTitle());
         model.setDescription(dto.getDescription());
@@ -25,14 +25,14 @@ public class EventConverter {
         return model;
     }
 
-    public static EventShortDto convToShortDto(EventModel model) {
+    public static EventShortDto convertToShortDto(EventModel model) {
         EventShortDto dto = new EventShortDto();
         dto.setId(model.getId());
         dto.setTitle(model.getTitle());
         dto.setDescription(model.getDescription());
         dto.setAnnotation(model.getAnnotation());
-        dto.setCategory(CategoryConverter.convToDto(model.getCategory()));
-        dto.setInitiator(UserConverter.convToDto(model.getInitiator()));
+        dto.setCategory(CategoryConverter.convertToDto(model.getCategory()));
+        dto.setInitiator(UserConverter.convertToDto(model.getInitiator()));
         dto.setConfirmedRequests(model.countConfirmedRequests());
         dto.setEventDate(model.getEventDate());
         dto.setPaid(model.getPaid());
@@ -42,12 +42,12 @@ public class EventConverter {
     public static List<EventShortDto> mapToShortDto(List<EventModel> events) {
         List<EventShortDto> res = new ArrayList<>();
         for (EventModel e : events) {
-            res.add(convToShortDto(e));
+            res.add(convertToShortDto(e));
         }
         return res;
     }
 
-    public static EventDtoFull convToDtoFull(EventModel model) {
+    public static EventDtoFull convertToDtoFull(EventModel model) {
         EventDtoFull dtoFull = new EventDtoFull();
         dtoFull.setId(model.getId());
         dtoFull.setTitle(model.getTitle());
@@ -58,10 +58,10 @@ public class EventConverter {
         dtoFull.setParticipantLimit(model.getParticipantLimit());
         dtoFull.setRequestModeration(model.getRequestModeration());
         dtoFull.setPaid(model.getPaid());
-        dtoFull.setCategory(CategoryConverter.convToDto(model.getCategory()));
+        dtoFull.setCategory(CategoryConverter.convertToDto(model.getCategory()));
         dtoFull.setConfirmedRequests(model.countConfirmedRequests());
         dtoFull.setCreatedOn(model.getCreatedOn());
-        dtoFull.setInitiator(UserConverter.convToDto(model.getInitiator()));
+        dtoFull.setInitiator(UserConverter.convertToDto(model.getInitiator()));
         dtoFull.setPublishedOn(model.getPublishedOn());
         dtoFull.setState(model.getState());
         return dtoFull;
@@ -70,7 +70,7 @@ public class EventConverter {
     public static List<EventDtoFull> mapToDtoFull(List<EventModel> events) {
         List<EventDtoFull> resFull = new ArrayList<>();
         for (EventModel e : events) {
-            resFull.add(convToDtoFull(e));
+            resFull.add(convertToDtoFull(e));
         }
         return resFull;
     }

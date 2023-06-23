@@ -59,7 +59,7 @@ public class RequestService {
                 throw new MainParamConflictException("Request limit with approved status exceeded");
             }
         }
-        var created = RequestConverter.convToModel(userId, eventId);
+        var created = RequestConverter.convertToModel(userId, eventId);
         created.setCreated(LocalDateTime.now());
         if (event.getRequestModeration().equals(false) || event.getParticipantLimit() == 0) {
             created.setStatus(RequestStatus.CONFIRMED);
@@ -67,7 +67,7 @@ public class RequestService {
             created.setStatus(RequestStatus.PENDING);
         }
         var after = requestRepository.save(created);
-        return RequestConverter.convToDto(after);
+        return RequestConverter.convertToDto(after);
     }
 
     public List<RequestDto> getRequestsInNotHisEvents(Long userId) {
@@ -85,6 +85,6 @@ public class RequestService {
         }
         check.setStatus(RequestStatus.CANCELED);
         var after = requestRepository.save(check);
-        return RequestConverter.convToDto(after);
+        return RequestConverter.convertToDto(after);
     }
 }

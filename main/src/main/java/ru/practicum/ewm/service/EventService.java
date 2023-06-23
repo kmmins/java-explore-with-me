@@ -66,8 +66,8 @@ public class EventService {
         if (duration.toSeconds() <= 7200) {
             throw new MainParamConflictException("Event date must be not earlier than two hours later");
         }
-        var createdEvent = EventConverter.convToModel(checkUser.get(), eventDto);
-        var category = CategoryConverter.convToModel(categoryService.getCategoryById(eventDto.getCategory()));
+        var createdEvent = EventConverter.convertToModel(checkUser.get(), eventDto);
+        var category = CategoryConverter.convertToModel(categoryService.getCategoryById(eventDto.getCategory()));
         createdEvent.setCategory(category);
         createdEvent.setCreatedOn(LocalDateTime.now());
         createdEvent.setState(EventState.PENDING);
@@ -82,7 +82,7 @@ public class EventService {
             createdEvent.setLocation(check.get(0));
         }
         var afterCreate = eventRepository.save(createdEvent);
-        return EventConverter.convToDtoFull(afterCreate);
+        return EventConverter.convertToDtoFull(afterCreate);
     }
 
     public List<EventShortDto> getAllEventsByInitiatorPrivate(Long userId, int from, int size) {
@@ -99,7 +99,7 @@ public class EventService {
         if (foundEvent == null) {
             throw new MainNotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
-        var result = EventConverter.convToDtoFull(foundEvent);
+        var result = EventConverter.convertToDtoFull(foundEvent);
         result.setViews(getViews(foundEvent));
         return result;
     }
@@ -123,7 +123,7 @@ public class EventService {
             eventToUpd.setAnnotation(eventDto.getAnnotation());
         }
         if (eventDto.getCategory() != null) {
-            var category = CategoryConverter.convToModel(categoryService.getCategoryById(eventDto.getCategory()));
+            var category = CategoryConverter.convertToModel(categoryService.getCategoryById(eventDto.getCategory()));
             eventToUpd.setCategory(category);
         }
         if (eventDto.getDescription() != null) {
@@ -169,7 +169,7 @@ public class EventService {
             }
         }
         var after = eventRepository.save(eventToUpd);
-        return EventConverter.convToDtoFull(after);
+        return EventConverter.convertToDtoFull(after);
     }
 
     public List<RequestDto> getEventRequests(Long userId, Long eventId) {
@@ -217,12 +217,12 @@ public class EventService {
                             }
                         }
                         var rSaved = requestRepository.save(r);
-                        afterUpdateStatus.getConfirmedRequests().add(RequestConverter.convToDto(rSaved));
+                        afterUpdateStatus.getConfirmedRequests().add(RequestConverter.convertToDto(rSaved));
                     }
                     if (requestDto.getStatus().equals(RequestUpdateStatus.REJECTED)) {
                         r.setStatus(RequestStatus.REJECTED);
                         var rSaved = requestRepository.save(r);
-                        afterUpdateStatus.getRejectedRequests().add(RequestConverter.convToDto(rSaved));
+                        afterUpdateStatus.getRejectedRequests().add(RequestConverter.convertToDto(rSaved));
                     }
                 } else {
                     if (requestDto.getStatus().equals(RequestUpdateStatus.CONFIRMED)) {
@@ -292,7 +292,7 @@ public class EventService {
             eventToUpdAdmin.setAnnotation(eventDto.getAnnotation());
         }
         if (eventDto.getCategory() != null) {
-            var category = CategoryConverter.convToModel(categoryService.getCategoryById(eventDto.getCategory()));
+            var category = CategoryConverter.convertToModel(categoryService.getCategoryById(eventDto.getCategory()));
             eventToUpdAdmin.setCategory(category);
         }
         if (eventDto.getDescription() != null) {
@@ -343,7 +343,7 @@ public class EventService {
             }
         }
         var after = eventRepository.save(eventToUpdAdmin);
-        return EventConverter.convToDtoFull(after);
+        return EventConverter.convertToDtoFull(after);
     }
 
     public List<EventShortDto> getEventsPublic(
@@ -426,7 +426,7 @@ public class EventService {
         var dateTimeNow = LocalDateTime.now();
         statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);
         Long viewsFromStats = getViews(foundEvent);
-        var result = EventConverter.convToDtoFull(foundEvent);
+        var result = EventConverter.convertToDtoFull(foundEvent);
         result.setViews(viewsFromStats);
         return result;
     }

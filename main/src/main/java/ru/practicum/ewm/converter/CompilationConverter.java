@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CompilationConverter {
 
-    public static CompilationModel convToModel(CompilationDto dto) {
+    public static CompilationModel convertToModel(CompilationDto dto) {
         CompilationModel model = new CompilationModel();
         model.setTitle(dto.getTitle());
         model.setPinned(dto.getPinned());
@@ -16,7 +16,7 @@ public class CompilationConverter {
         return model;
     }
 
-    public static CompilationDto convToDto(CompilationModel model) {
+    public static CompilationDto convertToDto(CompilationModel model) {
         return new CompilationDto(
                 model.getId(),
                 model.getTitle(),
@@ -28,7 +28,7 @@ public class CompilationConverter {
     public static List<CompilationDto> mapToDto(List<CompilationModel> comps) {
         List<CompilationDto> res = new ArrayList<>();
         for (CompilationModel c : comps) {
-            res.add(convToDto(c));
+            res.add(convertToDto(c));
         }
         return res;
     }

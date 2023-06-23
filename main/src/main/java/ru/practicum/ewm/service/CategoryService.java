@@ -24,9 +24,9 @@ public class CategoryService {
     }
 
     public CategoryDto addCategory(CategoryDto categoryDto) {
-        var created = CategoryConverter.convToModel(categoryDto);
+        var created = CategoryConverter.convertToModel(categoryDto);
         var after = categoryRepository.save(created);
-        return CategoryConverter.convToDto(after);
+        return CategoryConverter.convertToDto(after);
     }
 
     public CategoryDto updateCategory(CategoryDto categoryDto, Long catId) {
@@ -37,7 +37,7 @@ public class CategoryService {
         CategoryModel updatedCat = check.get();
         updatedCat.setName(categoryDto.getName());
         var afterUpdate = categoryRepository.save(updatedCat);
-        return CategoryConverter.convToDto(afterUpdate);
+        return CategoryConverter.convertToDto(afterUpdate);
     }
 
     public void deleteCategory(Long catId) {
@@ -59,6 +59,6 @@ public class CategoryService {
             throw new MainNotFoundException("Category with id=" + catId + " was not found");
         }
 
-        return CategoryConverter.convToDto(result.get());
+        return CategoryConverter.convertToDto(result.get());
     }
 }

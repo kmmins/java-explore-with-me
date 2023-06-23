@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UserConverter {
 
-    public static UserModel convToModel(UserDto dto) {
+    public static UserModel convertToModel(UserDto dto) {
         return new UserModel(
                 dto.getId(),
                 dto.getEmail(),
@@ -16,7 +16,7 @@ public class UserConverter {
         );
     }
 
-    public static UserDto convToDto(UserModel model) {
+    public static UserDto convertToDto(UserModel model) {
         return new UserDto(
                 model.getId(),
                 model.getEmail(),
@@ -27,7 +27,7 @@ public class UserConverter {
     public static List<UserDto> mapToDto(List<UserModel> users) {
         List<UserDto> res = new ArrayList<>();
         for (UserModel u : users) {
-            res.add(convToDto(u));
+            res.add(convertToDto(u));
         }
         return res;
     }

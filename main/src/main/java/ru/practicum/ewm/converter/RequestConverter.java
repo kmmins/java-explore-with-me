@@ -8,14 +8,14 @@ import java.util.List;
 
 public class RequestConverter {
 
-    public static RequestModel convToModel(Long userId, Long eventId) {
+    public static RequestModel convertToModel(Long userId, Long eventId) {
         RequestModel model = new RequestModel();
         model.setEvent(eventId);
         model.setRequester(userId);
         return model;
     }
 
-    public static RequestDto convToDto(RequestModel model) {
+    public static RequestDto convertToDto(RequestModel model) {
         RequestDto dto = new RequestDto();
         dto.setId(model.getId());
         dto.setEvent(model.getEvent());
@@ -28,7 +28,7 @@ public class RequestConverter {
     public static List<RequestDto> mapToDto(List<RequestModel> requests) {
         List<RequestDto> res = new ArrayList<>();
         for (RequestModel r : requests) {
-            res.add(convToDto(r));
+            res.add(convertToDto(r));
         }
         return res;
     }

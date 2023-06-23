@@ -25,9 +25,9 @@ public class CompilationService {
     }
 
     public CompilationDto addCompilation(CompilationDto compilationDto) {
-        var create = CompilationConverter.convToModel(compilationDto);
+        var create = CompilationConverter.convertToModel(compilationDto);
         var after = compilationRepository.save(create);
-        return CompilationConverter.convToDto(after);
+        return CompilationConverter.convertToDto(after);
     }
 
     public CompilationDto updateCompilation(Long compId, CompilationUpdateDto compilationDto) {
@@ -46,7 +46,7 @@ public class CompilationService {
             updatedComp.setEvents(compilationDto.getEvents());
         }
         var after = compilationRepository.save(updatedComp);
-        return CompilationConverter.convToDto(after);
+        return CompilationConverter.convertToDto(after);
     }
 
     public void deleteCompilation(Long compId) {
@@ -81,6 +81,6 @@ public class CompilationService {
             throw new MainNotFoundException("Compilation with id=" + compId + " was not found");
         }
 
-        return CompilationConverter.convToDto(result.get());
+        return CompilationConverter.convertToDto(result.get());
     }
 }
