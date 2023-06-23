@@ -823,7 +823,7 @@
 			"response": []
 		},
 		{
-			"name": "public get Events 135 comments length after delete_ok",
+			"name": "public get Event 105 comments length after delete_ok",
 			"event": [
 				{
 					"listen": "test",
@@ -846,7 +846,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/events/135",
+					"raw": "http://localhost:8080/events/105",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -854,7 +854,7 @@
 					"port": "8080",
 					"path": [
 						"events",
-						"135"
+						"105"
 					]
 				}
 			},
