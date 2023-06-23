@@ -33,7 +33,7 @@ public class PrivateCommentController {
         return addedCommentDto;
     }
 
-    @PostMapping("/{eventId}/comment/{commentId}")
+    @PatchMapping("/{eventId}/comment/{commentId}")
     public CommentDto updateComment(@PathVariable Long userId,
                                     @PathVariable Long eventId,
                                     @PathVariable Long commentId,

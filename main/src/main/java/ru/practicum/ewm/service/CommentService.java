@@ -10,8 +10,6 @@ import ru.practicum.ewm.model.RequestStatus;
 import ru.practicum.ewm.model.dto.CommentDto;
 import ru.practicum.ewm.repository.*;
 
-import java.time.LocalDateTime;
-
 @Service
 public class CommentService {
 
@@ -42,11 +40,10 @@ public class CommentService {
             throw new MainNotFoundException("Event with id=" + eventId + " was not found");
         }
         var event = checkEvent.get();
-        var dateTime = LocalDateTime.now();
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new MainParameterException("Only published event can be commented");
         }
-        if (dateTime.isAfter(event.getEventDate()) && (event.getRequestModeration() || event.getParticipantLimit() != 0)) {
+        if (commentDto.getCreated().isAfter(event.getEventDate()) && (event.getRequestModeration() || event.getParticipantLimit() != 0)) {
             var checkRequester = requestRepository.getRequestForAddComment(eventId, userId, RequestStatus.CONFIRMED.toString());
             if (checkRequester == null || !userId.equals(event.getInitiator().getId())) {
                 throw new MainParameterException("Only confirmed requester or initiator can leave comments when event get started");
@@ -62,19 +59,21 @@ public class CommentService {
         if (checkUser.isEmpty()) {
             throw new MainNotFoundException("User with id=" + userId + " was not found");
         }
-        var user = checkUser.get();
         var checkEvent = eventRepository.findById(eventId);
         if (checkEvent.isEmpty()) {
             throw new MainNotFoundException("Event with id=" + eventId + " was not found");
         }
-        var event = checkEvent.get();
         var checkComment = commentRepository.findById(commentId);
         if (checkComment.isEmpty()) {
             throw new MainNotFoundException("Comment with id=" + commentId + " was not found");
         }
         var comment = checkComment.get();
         if (userId.equals(comment.getAuthor().getId())) {
-            var after = commentRepository.save(CommentConverter.convertToModel(user, event, updCommentDto));
+            if (comment.getText().equals(updCommentDto.getText())) {
+                throw new MainParameterException("Comment text not changed");
+            }
+            comment.setText(updCommentDto.getText());
+            var after = commentRepository.save((comment));
             return CommentConverter.convertToDto(after);
         } else {
             throw new MainParameterException("Only author can update comment");
