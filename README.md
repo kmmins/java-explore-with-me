@@ -13,6 +13,9 @@ Service for sharing information about interesting events and finding a company t
 !!! link for review (ссылка на пул реквест):  
 https://github.com/kmmins/java-explore-with-me/pull/5
 
+!!! link after fixes:
+https://github.com/kmmins/java-explore-with-me/pull/5
+
 Main service database schema:
 ```mermaid
 classDiagram
