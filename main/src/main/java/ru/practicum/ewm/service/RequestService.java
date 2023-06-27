@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.converter.RequestConverter;
 import ru.practicum.ewm.model.dto.RequestDto;
-import ru.practicum.ewm.exception.MainNotFoundException;
-import ru.practicum.ewm.exception.MainParamConflictException;
+import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.exception.ParamConflictException;
 import ru.practicum.ewm.model.EventState;
 import ru.practicum.ewm.model.RequestStatus;
 import ru.practicum.ewm.repository.EventRepository;
@@ -35,28 +35,28 @@ public class RequestService {
     public RequestDto addRequest(Long userId, Long eventId) {
         var userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
-            throw new MainNotFoundException("User with id=" + userId + " was not found");
+            throw new NotFoundException("User with id=" + userId + " was not found");
         }
         var eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isEmpty()) {
-            throw new MainNotFoundException("Event with id=" + eventId + " was not found");
+            throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
         var event = eventOpt.get();
         var checkReRequest = requestRepository.checkReRequest(eventId, userId);
         if (checkReRequest != null) {
-            throw new MainParamConflictException("Unable to add a repeat request");
+            throw new ParamConflictException("Unable to add a repeat request");
         }
         var checkInitiator = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (checkInitiator != null) {
-            throw new MainParamConflictException("Initiator cannot be requester");
+            throw new ParamConflictException("Initiator cannot be requester");
         }
         if (event.getState() != EventState.PUBLISHED) {
-            throw new MainParamConflictException("Unable to participate in an unpublished event");
+            throw new ParamConflictException("Unable to participate in an unpublished event");
         }
         if (event.getParticipantLimit() > 0) {
             var countId = event.countConfirmedRequests();
             if (event.getParticipantLimit() <= countId) {
-                throw new MainParamConflictException("Request limit with approved status exceeded");
+                throw new ParamConflictException("Request limit with approved status exceeded");
             }
         }
         var created = RequestConverter.convertToModel(userId, eventId);
@@ -81,7 +81,7 @@ public class RequestService {
     public RequestDto cancelRequest(Long userId, Long requestId) {
         var check = requestRepository.findByIdAndAndRequester(requestId, userId);
         if (check == null) {
-            throw new MainNotFoundException("Request with id=" + requestId + " from user with id=" + userId + " was not found");
+            throw new NotFoundException("Request with id=" + requestId + " from user with id=" + userId + " was not found");
         }
         check.setStatus(RequestStatus.CANCELED);
         var after = requestRepository.save(check);

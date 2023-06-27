@@ -1,10 +1,10 @@
 package ru.practicum.ewm.stats.exception;
 
-public class StatsErrorResponse {
+public class ErrorResponse {
 
     private final String error;
 
-    public StatsErrorResponse(String error) {
+    public ErrorResponse(String error) {
         this.error = error;
     }
 

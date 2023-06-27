@@ -65,4 +65,12 @@ public class EventModel {
         }
         return result;
     }
+
+    public long countComments() {
+        long result = 0L;
+        if (commentModelList != null) {
+            result = commentModelList.size();
+        }
+        return result;
+    }
 }

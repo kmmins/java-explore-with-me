@@ -10,9 +10,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import ru.practicum.ewm.converter.CategoryConverter;
 import ru.practicum.ewm.converter.EventConverter;
 import ru.practicum.ewm.converter.RequestConverter;
-import ru.practicum.ewm.exception.MainNotFoundException;
-import ru.practicum.ewm.exception.MainParamConflictException;
-import ru.practicum.ewm.exception.MainParameterException;
+import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.exception.ParamConflictException;
+import ru.practicum.ewm.exception.ParameterException;
 import ru.practicum.ewm.model.*;
 import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.repository.*;
@@ -56,12 +56,12 @@ public class EventService {
     public EventDtoFull addEvent(Long userId, EventDto eventDto) {
         var checkUser = userRepository.findById(userId);
         if (checkUser.isEmpty()) {
-            throw new MainNotFoundException("User with id=" + userId + " was not found");
+            throw new NotFoundException("User with id=" + userId + " was not found");
         }
         var dateTimeNow = LocalDateTime.now();
         Duration duration = Duration.between(dateTimeNow, eventDto.getEventDate());
         if (duration.toSeconds() <= 7200) {
-            throw new MainParamConflictException("Event date must be not earlier than two hours later");
+            throw new ParamConflictException("Event date must be not earlier than two hours later");
         }
         var createdEvent = EventConverter.convertToModel(checkUser.get(), eventDto);
         var category = CategoryConverter.convertToModel(categoryService.getCategoryById(eventDto.getCategory()));
@@ -94,7 +94,7 @@ public class EventService {
     public EventDtoFull getEventByIdPrivate(Long userId, Long eventId) {
         var foundEvent = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (foundEvent == null) {
-            throw new MainNotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
+            throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
         var result = EventConverter.convertToDtoFull(foundEvent);
         result.setViews(getViews(foundEvent));
@@ -104,15 +104,15 @@ public class EventService {
     public EventDtoFull updateEventPrivate(Long userId, Long eventId, EventUpdateDto eventDto) {
         var eventToUpd = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (eventToUpd == null) {
-            throw new MainNotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
+            throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
         if (eventToUpd.getState().equals(EventState.PUBLISHED)) {
-            throw new MainParamConflictException("Updated event must be not published");
+            throw new ParamConflictException("Updated event must be not published");
         }
         var dateTimeNow = LocalDateTime.now();
         if (eventDto.getEventDate() != null) {
             if (eventDto.getEventDate().isBefore(dateTimeNow) || Duration.between(dateTimeNow, eventDto.getEventDate()).toSeconds() <= 7200) {
-                throw new MainParamConflictException("Event date must be not earlier than two hours later");
+                throw new ParamConflictException("Event date must be not earlier than two hours later");
             }
             eventToUpd.setEventDate(eventDto.getEventDate());
         }
@@ -153,16 +153,16 @@ public class EventService {
         if (eventDto.getStateAction() != null) {
             if (eventDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
                 if (!eventToUpd.getState().equals(EventState.CANCELED)) {
-                    throw new MainParamConflictException("Cannot send to review if state is not canceled");
+                    throw new ParamConflictException("Cannot send to review if state is not canceled");
                 }
                 eventToUpd.setState(EventState.PENDING);
             } else if (eventDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
                 if (!eventToUpd.getState().equals(EventState.PENDING)) {
-                    throw new MainParamConflictException("Cannot cancel event if it is not state pending");
+                    throw new ParamConflictException("Cannot cancel event if it is not state pending");
                 }
                 eventToUpd.setState(EventState.CANCELED);
             } else {
-                throw new MainParamConflictException("Incorrect state action");
+                throw new ParamConflictException("Incorrect state action");
             }
         }
         var after = eventRepository.save(eventToUpd);
@@ -172,7 +172,7 @@ public class EventService {
     public List<RequestDto> getEventRequests(Long userId, Long eventId) {
         var check = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (check == null) {
-            throw new MainNotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
+            throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
         var listRequests = requestRepository.getEventRequests(eventId);
         return RequestConverter.mapToDto(listRequests);
@@ -181,7 +181,7 @@ public class EventService {
     public RequestUpdateResultDto updateStatusRequestsForEvent(Long userId, Long eventId, RequestUpdateDto requestDto) {
         var thisEvent = eventRepository.findByIdAndAndInitiator(eventId, userId);
         if (thisEvent == null) {
-            throw new MainNotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
+            throw new NotFoundException("Event with id=" + eventId + " and added by user id=" + userId + " was not found");
         }
         RequestUpdateResultDto afterUpdateStatus = new RequestUpdateResultDto();
         var allRequests = thisEvent.getAllRequests().stream()
@@ -191,12 +191,12 @@ public class EventService {
                 .map(allRequests::get)
                 .collect(Collectors.toList());
         if (selectedRequests.stream().anyMatch(Objects::isNull)) {
-            throw new MainParameterException("Request not found for this event");
+            throw new ParameterException("Request not found for this event");
         }
         boolean check = selectedRequests.stream()
                 .anyMatch(r -> !Objects.equals(r.getStatus(), RequestStatus.PENDING));
         if (check) {
-            throw new MainParamConflictException("Request must have status PENDING");
+            throw new ParamConflictException("Request must have status PENDING");
         }
         if (thisEvent.getRequestModeration().equals(true) || thisEvent.getParticipantLimit() != 0) {
             long confReq = thisEvent.countConfirmedRequests();
@@ -223,7 +223,7 @@ public class EventService {
                     }
                 } else {
                     if (requestDto.getStatus().equals(RequestUpdateStatus.CONFIRMED)) {
-                        throw new MainParamConflictException("The participant limit has been reached");
+                        throw new ParamConflictException("The participant limit has been reached");
                     }
                 }
             }
@@ -275,13 +275,13 @@ public class EventService {
     public EventDtoFull updateEventByAdmin(Long eventId, EventUpdateDto eventDto) {
         var check = eventRepository.findById(eventId);
         if (check.isEmpty()) {
-            throw new MainNotFoundException("Event with id=" + eventId + " was not found");
+            throw new NotFoundException("Event with id=" + eventId + " was not found");
         }
         var eventToUpdAdmin = check.get();
         var dateTimeNow = LocalDateTime.now();
         if (eventDto.getEventDate() != null) {
             if (eventDto.getEventDate().isBefore(dateTimeNow) || Duration.between(dateTimeNow, eventDto.getEventDate()).toSeconds() <= 7200) {
-                throw new MainParamConflictException("Event date must be not earlier than two hours later");
+                throw new ParamConflictException("Event date must be not earlier than two hours later");
             }
             eventDto.setEventDate(eventDto.getEventDate());
         }
@@ -322,21 +322,21 @@ public class EventService {
         if (eventDto.getStateAction() != null) {
             if (eventDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
                 if (!eventToUpdAdmin.getState().equals(EventState.PENDING)) {
-                    throw new MainParamConflictException("Cannot publish event because it's not in the pending state");
+                    throw new ParamConflictException("Cannot publish event because it's not in the pending state");
                 }
                 var datePublish = LocalDateTime.now();
                 if (eventToUpdAdmin.getEventDate().isBefore(datePublish) || Duration.between(datePublish, eventToUpdAdmin.getEventDate()).toSeconds() <= 3600) {
-                    throw new MainParamConflictException("Event date must be not earlier than one hour before published");
+                    throw new ParamConflictException("Event date must be not earlier than one hour before published");
                 }
                 eventToUpdAdmin.setState(EventState.PUBLISHED);
                 eventToUpdAdmin.setPublishedOn(datePublish);
             } else if (eventDto.getStateAction().equals(EventStateAction.REJECT_EVENT)) {
                 if (!eventToUpdAdmin.getState().equals(EventState.PENDING)) {
-                    throw new MainParamConflictException("Cannot reject event because it's in the published state");
+                    throw new ParamConflictException("Cannot reject event because it's in the published state");
                 }
                 eventToUpdAdmin.setState(EventState.CANCELED);
             } else {
-                throw new MainParamConflictException("Incorrect state action");
+                throw new ParamConflictException("Incorrect state action");
             }
         }
         var after = eventRepository.save(eventToUpdAdmin);
@@ -364,7 +364,7 @@ public class EventService {
         BooleanExpression predicatePublic = qModel.eventDate.after(rangeStart).and(qModel.state.eq(EventState.PUBLISHED));
         if (rangeEnd != null) {
             if (rangeStart.isAfter(rangeEnd)) {
-                throw new MainParameterException("Incorrect time");
+                throw new ParameterException("Incorrect time");
             }
             predicatePublic = predicatePublic.and(qModel.eventDate.before(rangeEnd));
         }
@@ -418,7 +418,7 @@ public class EventService {
     public EventDtoFull getEventByIdPublic(Long id, HttpServletRequest request) {
         EventModel foundEvent = eventRepository.findByIdPublished(id, EventState.PUBLISHED.toString());
         if (foundEvent == null) {
-            throw new MainNotFoundException("Event with id=" + id + " was not found");
+            throw new NotFoundException("Event with id=" + id + " was not found");
         }
         var dateTimeNow = LocalDateTime.now();
         statsClient.saveStats("ewm-main-service", request.getRequestURI(), request.getRemoteAddr(), dateTimeNow);

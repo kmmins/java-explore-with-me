@@ -22,6 +22,6 @@ public interface RequestRepository extends JpaRepository<RequestModel, Long> {
     @Query(value = "select * from requests where event_id=?1", nativeQuery = true)
     List<RequestModel> getEventRequests(Long eventId);
 
-    @Query(value = "select  * from requests where event_id=?1 and requester_id =?2 and status=?3", nativeQuery = true)
-    RequestModel getRequestForAddComment(Long eventId, Long requesterId, String requestStatus);
+    @Query(value = "select * from requests where event_id=?1 and requester_id =?2 and status=?3", nativeQuery = true)
+    boolean existsRequestForAddComment(Long eventId, Long requesterId, String requestStatus);
 }
