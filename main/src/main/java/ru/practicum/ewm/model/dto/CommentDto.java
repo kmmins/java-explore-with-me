@@ -23,4 +23,11 @@ public class CommentDto {
     private String authorName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
+
+    public LocalDateTime getCreated() {
+        if (created == null) {
+            created = LocalDateTime.now();
+        }
+        return created;
+    }
 }

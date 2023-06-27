@@ -323,7 +323,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"this will be nice event\"\n}",
+					"raw": "{\n  \"text\": \"this will be nice event\",\n  \"authorName\": \"Alex\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -368,7 +368,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"999\"\n}",
+					"raw": "{\n  \"text\": \"999\",\n  \"authorName\": \"99\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -413,7 +413,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"Hi\",\n  \"created\": \"2025-05-25 22:25:25\"\n}",
+					"raw": "{\n  \"text\": \"Hi\",\n  \"authorName\": \"Brian\",\n  \"created\": \"2025-05-25 22:25:25\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -458,7 +458,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"Hi\"\n}",
+					"raw": "{\n  \"text\": \"Hi\",\n  \"authorName\": \"99\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -484,7 +484,7 @@
 			"response": []
 		},
 		{
-			"name": "add Comment 1 from Initiator to Event 106_fail",
+			"name": "add Comment from Initiator to Event 106 (only published)_fail",
 			"event": [
 				{
 					"listen": "test",
@@ -503,7 +503,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"lets go\"\n}",
+					"raw": "{\n  \"text\": \"lets go\",\n  \"authorName\": \"99\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -538,10 +538,10 @@
 							"pm.test(\"Status code 200,201\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
 							"});",
-							"pm.test(\"Test event 'comments' field\", function () {",
+							"pm.test(\"Test event 'qtyComments' field\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('comments');",
-							"    pm.expect(jsonData.comments[0].text, '\"event.comments\" must be \"this will be nice event\"').to.eql('this will be nice event');",
+							"    pm.expect(jsonData).to.have.property('qtyComments');",
+							"    pm.expect(jsonData.qtyComments).to.eql(1);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -582,6 +582,11 @@
 						"exec": [
 							"pm.test(\"Status code 200,201\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
+							"});",
+							"pm.test(\"Test event update text field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('text');",
+							"    pm.expect(jsonData.text).to.eql(\"it will be...\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -593,7 +598,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"it will be...\"\n}",
+					"raw": "{\n  \"text\": \"it will be...\",\n  \"authorName\": \"Alex\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -620,44 +625,6 @@
 			"response": []
 		},
 		{
-			"name": "public get Event 105 after update_ok",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code 200,201\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
-							"});",
-							"pm.test(\"Test event 'comments' field\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('comments');",
-							"    pm.expect(jsonData.comments[0].text, '\"comments\" must be \"it will be...\"').to.eql('it will be...');",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/events/105",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"events",
-						"105"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "add Comment 1 from User136 to Event 105_ok",
 			"event": [
 				{
@@ -666,6 +633,11 @@
 						"exec": [
 							"pm.test(\"Status code 200\", function () {",
 							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"pm.test(\"Test event add 2 comment\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('text');",
+							"    pm.expect(jsonData.text).to.eql(\"Hi\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -677,7 +649,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"Hi\"\n}",
+					"raw": "{\n  \"text\": \"Hi\",\n  \"authorName\": \"Brian\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -703,6 +675,89 @@
 			"response": []
 		},
 		{
+			"name": "add Comment 2 from User137 to Event 105_ok",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"text\": \"Hi All!\",\n  \"authorName\": \"Sam\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/137/events/105/comment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"137",
+						"events",
+						"105",
+						"comment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "public get Event 105 after next comment_ok",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code 200,201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
+							"});",
+							"pm.test(\"Test event 'qtyComments' field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('qtyComments');",
+							"    pm.expect(jsonData.qtyComments).to.eql(3);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/events/105",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"events",
+						"105"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "update Comment 1 by Initiator_fail",
 			"event": [
 				{
@@ -722,7 +777,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"text\": \"Hi, hi, hi\"\n}",
+					"raw": "{\n  \"text\": \"Hi, hi, hi\",\n  \"authorName\": \"Alex\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -804,7 +859,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/users/135/events/105/comment/1",
+					"raw": "http://localhost:8080/users/136/events/105/comment/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -812,7 +867,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"135",
+						"136",
 						"events",
 						"105",
 						"comment",
@@ -832,10 +887,10 @@
 							"pm.test(\"Status code 200,201\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
 							"});",
-							"pm.test(\"Test event 'comments' field\", function () {",
+							"pm.test(\"Test event 'qtyComments' field\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData).to.have.property('comments');",
-							"    pm.expect(jsonData.comments.length, 'List length must be 1').to.eql(1);",
+							"    pm.expect(jsonData).to.have.property('qtyComments');",
+							"    pm.expect(jsonData.qtyComments).to.eql(2);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -855,6 +910,68 @@
 					"path": [
 						"events",
 						"105"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get All comments for Event 105 from Initiator",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/135/events/105/comment/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"135",
+						"events",
+						"105",
+						"comment",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get by Id comments for Event 105 from User 137",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/137/events/105/comment/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"137",
+						"events",
+						"105",
+						"comment",
+						"2"
 					]
 				}
 			},

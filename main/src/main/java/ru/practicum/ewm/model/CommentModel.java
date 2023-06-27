@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,7 +24,6 @@ public class CommentModel {
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private UserModel author;
-    @CreationTimestamp
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
     @ManyToOne

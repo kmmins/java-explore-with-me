@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ru.practicum.ewm.model.RequestModel;
+import ru.practicum.ewm.model.RequestStatus;
 
 import java.util.List;
 
@@ -22,6 +23,5 @@ public interface RequestRepository extends JpaRepository<RequestModel, Long> {
     @Query(value = "select * from requests where event_id=?1", nativeQuery = true)
     List<RequestModel> getEventRequests(Long eventId);
 
-    @Query(value = "select * from requests where event_id=?1 and requester_id =?2 and status=?3", nativeQuery = true)
-    boolean existsRequestForAddComment(Long eventId, Long requesterId, String requestStatus);
+    boolean existsByRequesterAndEventAndStatus(Long userId, Long eventId, RequestStatus status);
 }

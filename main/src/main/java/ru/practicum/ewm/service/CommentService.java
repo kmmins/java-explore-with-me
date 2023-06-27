@@ -43,8 +43,8 @@ public class CommentService {
             throw new ParameterException("Only published event can be commented");
         }
         if (commentDto.getCreated().isAfter(event.getEventDate()) && (event.getRequestModeration() || event.getParticipantLimit() != 0)) {
-            var requester = requestRepository.existsRequestForAddComment(eventId, userId, RequestStatus.CONFIRMED.toString());
-            if (!requester || !userId.equals(event.getInitiator().getId())) {
+            boolean rq = requestRepository.existsByRequesterAndEventAndStatus(userId, eventId, RequestStatus.CONFIRMED);
+            if (!rq || !userId.equals(event.getInitiator().getId())) {
                 throw new ParameterException("Only confirmed requester or initiator can leave comments when event get started");
             }
         }
