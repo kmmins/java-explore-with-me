@@ -23,6 +23,5 @@ public class EventShortDto {
     private Long confirmedRequests;
     private Boolean paid;
     private Long views;
-    //private List<CommentDto> comments;
     private Long qtyComments;
 }

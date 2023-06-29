@@ -10,10 +10,7 @@ Repository for diploma project.
 
 Service for sharing information about interesting events and finding a company to participate in them.
 
-!!! link for review (ссылка на пул реквест):  
-https://github.com/kmmins/java-explore-with-me/pull/5
-
-!!! link after fixes:
+!!! link for review:  
 https://github.com/kmmins/java-explore-with-me/pull/5
 
 Main service database schema:
