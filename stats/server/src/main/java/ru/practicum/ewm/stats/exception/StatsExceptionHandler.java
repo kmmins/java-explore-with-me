@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class StatsServerExceptionHandler {
+public class StatsExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public StatsErrorResponse handleParameter(final StatsParameterException e) {
+    public ErrorResponse handleParameter(final ParameterException e) {
         log.error("Error processing request: {}.", e.getMessage());
-        return new StatsErrorResponse(e.getMessage());
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public StatsErrorResponse handleNotFoundStats(final StatsNotFoundException e) {
+    public ErrorResponse handleNotFoundStats(final NotFoundException e) {
         log.error("Error processing request: {}.", e.getMessage());
-        return new StatsErrorResponse(e.getMessage());
+        return new ErrorResponse(e.getMessage());
     }
 }

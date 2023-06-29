@@ -10,6 +10,9 @@ Repository for diploma project.
 
 Service for sharing information about interesting events and finding a company to participate in them.
 
+!!! link for review:  
+https://github.com/kmmins/java-explore-with-me/pull/5
+
 Main service database schema:
 ```mermaid
 classDiagram
@@ -92,3 +95,5 @@ class hits {
    bigint id
 }
 ```
+
+These technologies were used for this project: Spring Boot, Maven, Lombok, REST, CRUD, PostgreSQL, Spring RestTemplate, Jakarta Persistence API, NamedQuery, JPQL Queries, Native Queries, QuerydslPredicateExecutor, Docker, Docker-compose.

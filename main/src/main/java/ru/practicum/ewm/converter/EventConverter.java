@@ -36,6 +36,7 @@ public class EventConverter {
         dto.setConfirmedRequests(model.countConfirmedRequests());
         dto.setEventDate(model.getEventDate());
         dto.setPaid(model.getPaid());
+        dto.setQtyComments(model.countComments());
         return dto;
     }
 
@@ -64,6 +65,7 @@ public class EventConverter {
         dtoFull.setInitiator(UserConverter.convertToDto(model.getInitiator()));
         dtoFull.setPublishedOn(model.getPublishedOn());
         dtoFull.setState(model.getState());
+        dtoFull.setQtyComments(model.countComments());
         return dtoFull;
     }
 

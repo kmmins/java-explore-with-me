@@ -21,6 +21,7 @@ public class RequestModel {
     private Long requester;
     @Column(name = "created")
     private LocalDateTime created;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private RequestStatus status;
 }

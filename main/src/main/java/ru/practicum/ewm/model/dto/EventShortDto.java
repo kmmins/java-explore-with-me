@@ -23,4 +23,5 @@ public class EventShortDto {
     private Long confirmedRequests;
     private Boolean paid;
     private Long views;
+    private Long qtyComments;
 }

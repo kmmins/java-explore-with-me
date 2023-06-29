@@ -29,7 +29,7 @@ public class EventModel {
     @ManyToOne
     @JoinColumn(name = "initiator_id", nullable = false)
     private UserModel initiator;
-    @ManyToOne/*(cascade = CascadeType.ALL)*/
+    @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private LocationModel location;
     @Column(name = "event_date")
@@ -50,6 +50,9 @@ public class EventModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private EventState state;
+    @OneToMany
+    @JoinColumn(name = "event_id")
+    private List<CommentModel> commentModelList;
 
     public long countConfirmedRequests() {
         long result = 0L;
@@ -59,6 +62,14 @@ public class EventModel {
                     result++;
                 }
             }
+        }
+        return result;
+    }
+
+    public long countComments() {
+        long result = 0L;
+        if (commentModelList != null) {
+            result = commentModelList.size();
         }
         return result;
     }
